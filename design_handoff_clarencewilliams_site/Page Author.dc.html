@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="assets/logo-gold.png">
+<style> body { margin: 0; background: #0B1626; } </style>
+</helmet>
+
+<div style="width: 1920px; background: #0B1626; color: #EDE6D6; font-family: 'Archivo', sans-serif; display: flex; flex-direction: column;" data-screen-label="Author Page">
+
+  <!-- Nav -->
+  <div style="background: #0B1626; border-bottom: 1px solid #2A3B52; display: flex; justify-content: space-between; align-items: center; padding: 18px 100px;">
+    <div style="display: flex; align-items: center; gap: 20px;">
+      <img src="assets/logo-gold.png" alt="Clarence Williams monogram" style="height: 36px; width: 36px; display: block;">
+      <span style="font-size: 14px; letter-spacing: 0.24em; color: #EDE6D6; font-weight: 600;">CLARENCE WILLIAMS</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 36px; font-size: 13px; letter-spacing: 0.16em; font-weight: 500;">
+      <a href="Page Home.dc.html" style="color: #A9B4C6; text-decoration: none;">HOME</a>
+      <a href="Page Services.dc.html" style="color: #A9B4C6; text-decoration: none;">SERVICES</a>
+      <a href="Page About.dc.html" style="color: #A9B4C6; text-decoration: none;">ABOUT</a>
+      <a href="Page Home.dc.html" style="background: #C9A24B; color: #0B1626; padding: 12px 24px; text-decoration: none; font-weight: 600;">BOOK A CALL</a>
+    </div>
+  </div>
+
+  <!-- Featured: Marketing Mayhem -->
+  <div style="display: grid; grid-template-columns: 620px 1fr; gap: 100px; padding: 110px 100px 100px; align-items: center;">
+    <div style="display: flex; flex-direction: column; gap: 24px;">
+      <div style="position: relative;">
+        <div style="position: absolute; top: 24px; left: 24px; width: 620px; height: 780px; border: 1px solid #C9A24B;"></div>
+        <div style="width: 620px; height: 780px; position: relative; background: #13233B; display: flex; overflow: hidden;">
+          <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="cover-mayhem" shape="rect" fit="cover" placeholder="Drop Marketing Mayhem cover" hint-size="620px,780px" dc-props="{{ slotFill }}" style="width: 100%; height: 100%;"></x-import>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 11px; letter-spacing: 0.26em; color: #7C8AA0; margin-top: 24px;">
+        <span>LATEST RELEASE</span><span>MANAGED BY ADMIN</span>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; align-items: flex-start;">
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <div style="width: 36px; height: 2px; background: #C9A24B;"></div>
+        <span style="font-size: 14px; letter-spacing: 0.32em; color: #A9B4C6; font-weight: 600;">THE AUTHOR</span>
+      </div>
+      <h1 style="font-family: 'Cormorant Garamond', serif; font-size: 96px; font-weight: 500; line-height: 1.04; margin: 30px 0 0;">Marketing <span style="font-style: italic; color: #C9A24B;">Mayhem</span></h1>
+      <div style="font-size: 15px; letter-spacing: 0.28em; color: #A9B4C6; font-weight: 500; margin-top: 22px;">THE NEW BOOK FROM CLARENCE WILLIAMS</div>
+      <p style="font-size: 21px; line-height: 1.7; color: #A9B4C6; margin: 36px 0 0; max-width: 720px; text-wrap: pretty;">Marketing has never been noisier. Mayhem is what happens when businesses chase every channel without a story that positions the customer as the hero. This book is the field guide for cutting through it.</p>
+      <div style="display: flex; gap: 20px; margin-top: 48px;">
+        <a href="https://marketing-mayhem.com/" style="background: #C9A24B; color: #0B1626; font-size: 15px; font-weight: 600; letter-spacing: 0.14em; padding: 20px 40px; text-decoration: none;">VISIT MARKETING-MAYHEM.COM</a>
+        <a href="https://www.amazon.com/" style="border: 1px solid #A9B4C6; color: #EDE6D6; font-size: 15px; font-weight: 600; letter-spacing: 0.14em; padding: 20px 40px; text-decoration: none;">BUY ON AMAZON</a>
+      </div>
+      <span style="font-size: 13px; color: #7C8AA0; margin-top: 26px;">Purchase links are managed from the admin dashboard.</span>
+    </div>
+  </div>
+
+  <!-- Past books, grouped -->
+  <div style="background: #F7F4EE; color: #10233A; padding: 100px 100px 96px;">
+    <div style="display: flex; justify-content: space-between; align-items: baseline;">
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <div style="width: 36px; height: 2px; background: #B0793F;"></div>
+        <span style="font-size: 14px; letter-spacing: 0.32em; color: #6B675F; font-weight: 600;">FROM THE ARCHIVE</span>
+      </div>
+      <span style="font-size: 12px; letter-spacing: 0.14em; color: #9A958A;">MANAGED BY ADMIN</span>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 760px; gap: 100px; margin-top: 48px; align-items: center;">
+      <div style="display: flex; flex-direction: column; align-items: flex-start;">
+        <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 64px; font-weight: 500; line-height: 1.1; margin: 0;">Two decades of <span style="font-style: italic; color: #B0793F;">writing it down.</span></h2>
+        <p style="font-size: 19px; line-height: 1.7; color: #322E29; margin: 28px 0 0; max-width: 680px; text-wrap: pretty;">Before Marketing Mayhem came a shelf of earlier works — including <em>Local Marketing for Small Business: Building a 5 Star Reputation</em> — each written from the front lines of running and advising real companies.</p>
+        <a href="https://www.amazon.com/" style="font-size: 13px; letter-spacing: 0.18em; color: #B0793F; text-decoration: none; border-bottom: 1px solid #B0793F; padding-bottom: 4px; margin-top: 36px;">FIND THEM ON AMAZON →</a>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 18px;">
+        <div style="width: 760px; height: 460px; background: #FFFFFF; border: 1px solid #D8D3C8; display: flex; overflow: hidden;">
+          <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="books-archive" shape="rect" fit="cover" placeholder="Drop group photo of past books" hint-size="760px,460px" dc-props="{{ slotFill }}" style="width: 100%; height: 100%;"></x-import>
+        </div>
+        <span style="font-size: 11px; letter-spacing: 0.26em; color: #9A958A; align-self: flex-end;">THE COLLECTED WORKS — FIG. 02</span>
+      </div>
+    </div>
+  </div>
+
+  <dc-import name="Section BookCall" hint-size="1920px,900px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return { slotFill: { style: { width: '100%', height: '100%', display: 'block' } } };
+  }
+}
+</script>
+</body>
+</html>

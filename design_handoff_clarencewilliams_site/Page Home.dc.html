@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="assets/logo-gold.png">
+<style> body { margin: 0; background: #0B1626; } </style>
+</helmet>
+
+<div style="width: 1920px; background: #0B1626; font-family: 'Archivo', sans-serif; display: flex; flex-direction: column;" data-screen-label="Home Page">
+  <div style="position: sticky; top: 0; z-index: 20; background: #0B1626; border-bottom: 1px solid #2A3B52; display: flex; justify-content: space-between; align-items: center; padding: 18px 100px;">
+    <div style="display: flex; align-items: center; gap: 20px;">
+      <img src="assets/logo-gold.png" alt="Clarence Williams monogram" style="height: 36px; width: 36px; display: block;">
+      <span style="font-size: 14px; letter-spacing: 0.24em; color: #EDE6D6; font-weight: 600;">CLARENCE WILLIAMS</span>
+      <span style="font-size: 12px; letter-spacing: 0.22em; color: #7C8AA0;">BUSINESS STRATEGY &amp; AGILE TRANSFORMATIONS</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 36px; font-size: 13px; letter-spacing: 0.16em; font-weight: 500;">
+      <a href="Page Home.dc.html" style="color: #EDE6D6; text-decoration: none; border-bottom: 1px solid #C9A24B; padding-bottom: 4px;">HOME</a>
+      <a href="Page Services.dc.html" style="color: #A9B4C6; text-decoration: none;">SERVICES</a>
+      <a href="Page About.dc.html" style="color: #A9B4C6; text-decoration: none;">ABOUT</a>
+      <a href="#book" style="background: #C9A24B; color: #0B1626; padding: 12px 24px; text-decoration: none; font-weight: 600;">BOOK A CALL</a>
+    </div>
+  </div>
+  <dc-import name="Hero Section" hint-size="1920px,1080px"></dc-import>
+  <dc-import name="Section Story" hint-size="1920px,700px"></dc-import>
+  <dc-import name="Section Ventures" hint-size="1920px,400px"></dc-import>
+  <dc-import name="Section BookCall" hint-size="1920px,900px"></dc-import>
+</div>
+</x-dc>
+</body>
+</html>

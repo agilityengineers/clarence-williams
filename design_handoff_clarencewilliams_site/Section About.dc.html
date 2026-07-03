@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style> body { margin: 0; } </style>
+</helmet>
+
+<div id="about" style="width: 1920px; background: #F7F4EE; color: #10233A; font-family: 'Archivo', sans-serif; box-sizing: border-box; padding: 110px 100px 100px;" data-screen-label="About">
+  <div style="display: grid; grid-template-columns: 480px 1fr; gap: 96px;">
+    <!-- Portrait -->
+    <div style="display: flex; flex-direction: column; gap: 24px;">
+      <div style="position: relative;">
+        <div style="position: absolute; top: 24px; left: 24px; width: 480px; height: 620px; border: 1px solid #B0793F;"></div>
+        <div style="width: 480px; height: 620px; position: relative; background: #10233A; display: flex; overflow: hidden;">
+          <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="about-portrait" shape="rect" fit="cover" position="50% 15%" src="uploads/clarence-williams-6149-copy-jpg-0cd58765c46366230b5204-original.jpg" placeholder="Drop portrait" hint-size="480px,620px" dc-props="{{ slotFill }}" style="width: 100%; height: 100%;"></x-import>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: space-between; font-size: 11px; letter-spacing: 0.26em; color: #6B675F; width: 480px; margin-top: 24px;">
+        <span>ALPHARETTA, GEORGIA</span><span>THE GUIDE</span>
+      </div>
+    </div>
+    <!-- Bio -->
+    <div style="display: flex; flex-direction: column;">
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <div style="width: 36px; height: 2px; background: #B0793F;"></div>
+        <span style="font-size: 14px; letter-spacing: 0.32em; color: #6B675F; font-weight: 600;">ABOUT CLARENCE</span>
+      </div>
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 64px; font-weight: 500; line-height: 1.1; margin: 28px 0 0; max-width: 1000px;">"The name of the game is <span style="font-style: italic; color: #B0793F;">delivering value.</span>"</h2>
+      <p style="font-size: 19px; line-height: 1.75; color: #322E29; margin: 36px 0 0; max-width: 940px; text-wrap: pretty;">Clarence Williams, MBA, PMP®, RTE®, SPC®, is a senior technology leader, executive coach, and business strategist who helps organizations change, improve, and evolve to deliver massive market value. As a Vistage Chair and facilitator of CEO Advisory Group — an Agility Engineers, LLC brand — he brings together owners, presidents, and CEOs of non-competing companies to address their most pressing leadership challenges.</p>
+      <p style="font-size: 19px; line-height: 1.75; color: #322E29; margin: 24px 0 0; max-width: 940px; text-wrap: pretty;">His enterprise pedigree includes leading the development team behind TDD, BDD, and continuous-integration pipelines for a landmark AT&amp;T and Apple collaboration, and engineering a waterfall-to-Agile migration that cut operational MTTR from over 90 days to 24 hours. He is the co-founder of Otis AI and author of <em>Local Marketing for Small Business: Building a 5 Star Reputation</em>.</p>
+      <!-- Credentials -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px 60px; margin-top: 52px; padding-top: 36px; border-top: 1px solid #D8D3C8; max-width: 940px;">
+        <div style="display: flex; gap: 16px; align-items: baseline;">
+          <span style="color: #B0793F; font-family: 'Cormorant Garamond', serif; font-size: 22px;">—</span>
+          <span style="font-size: 16px; line-height: 1.5;"><strong>MBA, Technology Management</strong> · Georgia Institute of Technology</span>
+        </div>
+        <div style="display: flex; gap: 16px; align-items: baseline;">
+          <span style="color: #B0793F; font-family: 'Cormorant Garamond', serif; font-size: 22px;">—</span>
+          <span style="font-size: 16px; line-height: 1.5;"><strong>BA, English Literature</strong> · Florida State University</span>
+        </div>
+        <div style="display: flex; gap: 16px; align-items: baseline;">
+          <span style="color: #B0793F; font-family: 'Cormorant Garamond', serif; font-size: 22px;">—</span>
+          <span style="font-size: 16px; line-height: 1.5;"><strong>PMP® · RTE® · SPC®</strong> · Project Management Institute &amp; Scaled Agile</span>
+        </div>
+        <div style="display: flex; gap: 16px; align-items: baseline;">
+          <span style="color: #B0793F; font-family: 'Cormorant Garamond', serif; font-size: 22px;">—</span>
+          <span style="font-size: 16px; line-height: 1.5;"><strong>Community</strong> · Habitat for Humanity · Leukemia &amp; Lymphoma Society triathlete</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return { slotFill: { style: { width: '100%', height: '100%', display: 'block' } } };
+  }
+}
+</script>
+</body>
+</html>

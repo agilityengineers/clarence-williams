@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="assets/logo-gold.png">
+<style> body { margin: 0; background: #0B1626; } </style>
+</helmet>
+
+<div style="width: 1920px; min-height: 1080px; background: #0B1626; color: #EDE6D6; font-family: 'Archivo', sans-serif; display: flex; flex-direction: column;" data-screen-label="Assessment">
+
+  <!-- Nav -->
+  <div style="background: #0B1626; border-bottom: 1px solid #2A3B52; display: flex; justify-content: space-between; align-items: center; padding: 18px 100px;">
+    <div style="display: flex; align-items: center; gap: 20px;">
+      <img src="assets/logo-gold.png" alt="Clarence Williams monogram" style="height: 36px; width: 36px; display: block;">
+      <span style="font-size: 14px; letter-spacing: 0.24em; color: #EDE6D6; font-weight: 600;">CLARENCE WILLIAMS</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 36px; font-size: 13px; letter-spacing: 0.16em; font-weight: 500;">
+      <a href="Page Home.dc.html" style="color: #A9B4C6; text-decoration: none;">HOME</a>
+      <a href="Page Services.dc.html" style="color: #A9B4C6; text-decoration: none;">SERVICES</a>
+      <a href="Page About.dc.html" style="color: #A9B4C6; text-decoration: none;">ABOUT</a>
+      <a href="Page Home.dc.html" style="background: #C9A24B; color: #0B1626; padding: 12px 24px; text-decoration: none; font-weight: 600;">BOOK A CALL</a>
+    </div>
+  </div>
+
+  <div style="flex: 1; display: flex; flex-direction: column; align-items: center; padding: 90px 100px 110px;">
+
+    <!-- INTRO -->
+    <sc-if value="{{ isIntro }}" hint-placeholder-val="{{ true }}">
+      <div style="display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 980px;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+          <div style="width: 36px; height: 2px; background: #C9A24B;"></div>
+          <span style="font-size: 14px; letter-spacing: 0.32em; color: #A9B4C6; font-weight: 600;">{{ eyebrow }}</span>
+          <div style="width: 36px; height: 2px; background: #C9A24B;"></div>
+        </div>
+        <h1 style="font-family: 'Cormorant Garamond', serif; font-size: 80px; font-weight: 500; line-height: 1.08; margin: 32px 0 0; text-wrap: balance;">{{ introTitle }}</h1>
+        <p style="font-size: 21px; line-height: 1.7; color: #A9B4C6; margin: 30px 0 0; max-width: 780px; text-wrap: pretty;">{{ introCopy }}</p>
+        <div style="display: flex; gap: 56px; margin-top: 48px; font-size: 14px; letter-spacing: 0.14em; color: #A9B4C6;">
+          <span><span style="color: #C9A24B; font-weight: 700;">10</span> QUESTIONS</span>
+          <span><span style="color: #C9A24B; font-weight: 700;">~3</span> MINUTES</span>
+          <span><span style="color: #C9A24B; font-weight: 700;">SCORED</span> RESULTS</span>
+        </div>
+        <div onClick="{{ start }}" style="background: #C9A24B; color: #0B1626; font-size: 15px; font-weight: 600; letter-spacing: 0.14em; padding: 22px 48px; cursor: pointer; margin-top: 52px;" style-hover="opacity: 0.9;">BEGIN THE ASSESSMENT</div>
+        <span style="font-size: 13px; color: #7C8AA0; margin-top: 24px;">Confidential. Your responses are reviewed only by Clarence's team.</span>
+        <a href="{{ otherHref }}" style="font-size: 13px; letter-spacing: 0.14em; color: #C9A24B; text-decoration: none; border-bottom: 1px solid #C9A24B; padding-bottom: 3px; margin-top: 36px;">{{ otherLabel }}</a>
+      </div>
+    </sc-if>
+
+    <!-- QUESTION -->
+    <sc-if value="{{ isQuestion }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; width: 1080px;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; letter-spacing: 0.2em; color: #A9B4C6;">
+          <span>{{ eyebrow }}</span>
+          <span>QUESTION <span style="color: #C9A24B; font-weight: 700;">{{ qNum }}</span> OF 10</span>
+        </div>
+        <div style="height: 2px; background: #2A3B52; margin-top: 18px;">
+          <div style="height: 2px; background: #C9A24B; width: {{ progressPct }}; transition: width 0.3s;"></div>
+        </div>
+        <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 52px; font-weight: 500; line-height: 1.2; margin: 64px 0 0; text-wrap: balance;">{{ qTitle }}</h2>
+        <div style="display: flex; flex-direction: column; gap: 16px; margin-top: 48px;">
+          <sc-for list="{{ options }}" as="opt" hint-placeholder-count="4">
+            <div onClick="{{ opt.pick }}" style="border: 1px solid #2A3B52; padding: 26px 32px; cursor: pointer; display: flex; align-items: center; gap: 24px; background: #0E1B2E;" style-hover="border-color: #C9A24B; background: #13233B;">
+              <span style="width: 34px; height: 34px; border-radius: 50%; border: 1px solid #C9A24B; color: #C9A24B; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; flex-shrink: 0;">{{ opt.key }}</span>
+              <span style="font-size: 19px; line-height: 1.5;">{{ opt.label }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div onClick="{{ back }}" style="font-size: 13px; letter-spacing: 0.18em; color: #7C8AA0; margin-top: 40px; cursor: pointer; align-self: flex-start;">← BACK</div>
+      </div>
+    </sc-if>
+
+    <!-- RESULTS -->
+    <sc-if value="{{ isResults }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 1000px;">
+        <span style="font-size: 14px; letter-spacing: 0.32em; color: #A9B4C6; font-weight: 600;">YOUR RESULTS</span>
+        <div style="width: 300px; height: 300px; border-radius: 50%; border: 1px solid #2A3B52; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-top: 44px; position: relative;">
+          <div style="position: absolute; inset: 14px; border-radius: 50%; border: 2px solid #C9A24B;"></div>
+          <span style="font-family: 'Cormorant Garamond', serif; font-size: 110px; line-height: 1; color: #C9A24B;">{{ score }}</span>
+          <span style="font-size: 13px; letter-spacing: 0.24em; color: #A9B4C6; margin-top: 8px;">OUT OF 100</span>
+        </div>
+        <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 62px; font-weight: 500; line-height: 1.15; margin: 44px 0 0; text-wrap: balance;">{{ tierLabel }}</h2>
+        <p style="font-size: 20px; line-height: 1.7; color: #A9B4C6; margin: 24px 0 0; max-width: 760px; text-wrap: pretty;">{{ tierCopy }}</p>
+        <div style="display: flex; gap: 24px; margin-top: 48px;">
+          <a href="Page Home.dc.html" style="background: #C9A24B; color: #0B1626; font-size: 15px; font-weight: 600; letter-spacing: 0.14em; padding: 22px 44px; text-decoration: none;">BOOK A CALL WITH CLARENCE</a>
+          <div onClick="{{ restart }}" style="border: 1px solid #A9B4C6; color: #EDE6D6; font-size: 15px; font-weight: 600; letter-spacing: 0.14em; padding: 22px 44px; cursor: pointer;">RETAKE ASSESSMENT</div>
+        </div>
+        <span style="font-size: 12.5px; color: #7C8AA0; margin-top: 40px; max-width: 700px; line-height: 1.6;">Prototype note: scoring shown here is illustrative. The qualification algorithm will be finalized during development.</span>
+      </div>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;assessment&quot;: {
+    &quot;editor&quot;: &quot;enum&quot;,
+    &quot;default&quot;: &quot;Agility Assessment&quot;,
+    &quot;tsType&quot;: &quot;string&quot;,
+    &quot;options&quot;: [&quot;Agility Assessment&quot;, &quot;Business Health Assessment&quot;],
+    &quot;section&quot;: &quot;Admin&quot;
+  }
+}">
+class Component extends DCLogic {
+  state = { screen: 'intro', idx: 0, picks: [] };
+
+  sets() {
+    return {
+      'Agility Assessment': {
+        eyebrow: 'AGILITY ASSESSMENT',
+        introTitle: 'How agile is your delivery organization?',
+        introCopy: 'Ten questions about how your organization plans, builds, and ships. Your score identifies where you stand today — and whether a guided agile transformation is the right next step.',
+        questions: [
+          { t: 'What is your company\u2019s annual revenue?', o: ['Under $5M', '$5M\u2013$50M', '$50M\u2013$250M', 'Over $250M'], v: [1, 3, 3, 2] },
+          { t: 'How are technology initiatives delivered today?', o: ['Strict waterfall, big up-front plans', 'Mostly waterfall with some agile teams', 'Agile teams, inconsistent practices', 'Scaled agile across the organization'], v: [0, 1, 2, 3] },
+          { t: 'How often does your organization release to production?', o: ['A few times a year', 'Monthly', 'Every sprint (1\u20132 weeks)', 'On demand / continuously'], v: [0, 1, 2, 3] },
+          { t: 'How predictable are delivery dates and budgets?', o: ['Routinely missed', 'Hit about half the time', 'Usually hit, with heroics', 'Consistently predictable'], v: [0, 1, 2, 3] },
+          { t: 'Does executive leadership sponsor process change?', o: ['No appetite for change', 'Interested but not committed', 'Committed sponsor identified', 'Active executive mandate'], v: [0, 1, 2, 3] },
+          { t: 'Who owns product priorities day to day?', o: ['Nobody clearly', 'A committee', 'Named product owners, part-time', 'Dedicated, empowered product owners'], v: [0, 1, 2, 3] },
+          { t: 'Do you measure delivery (cycle time, MTTR, quality escapes)?', o: ['No delivery metrics', 'Ad-hoc reporting', 'Some metrics, reviewed sometimes', 'Metrics reviewed on a cadence'], v: [0, 1, 2, 3] },
+          { t: 'How much rework or defect escape do you experience?', o: ['Constant firefighting', 'Frequent', 'Occasional', 'Rare and shrinking'], v: [0, 1, 2, 3] },
+          { t: 'How is work visualized across teams?', o: ['It isn\u2019t', 'Spreadsheets and status meetings', 'Team-level boards', 'Portfolio-level visibility'], v: [0, 1, 2, 3] },
+          { t: 'When would you want to begin improving delivery?', o: ['Just researching', 'Within a year', 'Within a quarter', 'Immediately'], v: [0, 1, 2, 3] }
+        ]
+      },
+      'Business Health Assessment': {
+        eyebrow: 'BUSINESS HEALTH ASSESSMENT',
+        introTitle: 'How healthy is your business, really?',
+        introCopy: 'Ten questions across revenue, leadership, operations, and market position. Your score highlights the strengths to build on and the constraints holding growth back.',
+        questions: [
+          { t: 'What is your company\u2019s annual revenue?', o: ['Under $5M', '$5M\u2013$50M', '$50M\u2013$250M', 'Over $250M'], v: [1, 3, 3, 2] },
+          { t: 'How has revenue trended over the last three years?', o: ['Declining', 'Flat', 'Growing under 10%/yr', 'Growing over 10%/yr'], v: [0, 1, 2, 3] },
+          { t: 'How would you describe profitability?', o: ['Losing money', 'Break-even', 'Profitable, below industry norms', 'Consistently strong margins'], v: [0, 1, 2, 3] },
+          { t: 'How dependent is the business on you, the owner?', o: ['Everything runs through me', 'Most decisions need me', 'Leadership team handles operations', 'Business runs without me'], v: [0, 1, 2, 3] },
+          { t: 'How predictable is your sales pipeline?', o: ['Feast or famine', 'Referrals only', 'Some repeatable channels', 'Predictable, measured funnel'], v: [0, 1, 2, 3] },
+          { t: 'What share of revenue comes from your largest customer?', o: ['Over 50%', '25\u201350%', '10\u201325%', 'Under 10%'], v: [0, 1, 2, 3] },
+          { t: 'Are core processes documented and followed?', o: ['In people\u2019s heads', 'Partially documented', 'Documented, loosely followed', 'Documented and audited'], v: [0, 1, 2, 3] },
+          { t: 'How is your leadership bench?', o: ['No second layer', 'One key lieutenant', 'Functional leaders in place', 'Deep, accountable leadership team'], v: [0, 1, 2, 3] },
+          { t: 'Do you operate against a written strategic plan?', o: ['No plan', 'Annual budget only', 'Plan exists, rarely revisited', 'Plan reviewed on a cadence'], v: [0, 1, 2, 3] },
+          { t: 'Do you have trusted peers to pressure-test decisions?', o: ['I decide alone', 'Informal advisors', 'A mentor or coach', 'A structured peer advisory group'], v: [0, 1, 2, 3] }
+        ]
+      }
+    };
+  }
+
+  renderVals() {
+    const set = this.sets()[this.props.assessment] ?? this.sets()['Agility Assessment'];
+    const { screen, idx, picks } = this.state;
+    const q = set.questions[Math.min(idx, 9)];
+    const keys = ['A', 'B', 'C', 'D'];
+    const options = q.o.map((label, i) => ({
+      label,
+      key: keys[i],
+      pick: () => {
+        const next = picks.slice(0, idx);
+        next[idx] = q.v[i];
+        if (idx >= 9) this.setState({ picks: next, screen: 'results' });
+        else this.setState({ picks: next, idx: idx + 1 });
+      }
+    }));
+    const total = picks.reduce((a, b) => a + (b || 0), 0);
+    const score = Math.round((total / 30) * 100);
+    const isBiz = (this.props.assessment === 'Business Health Assessment');
+    let tierLabel, tierCopy;
+    if (isBiz) {
+      if (score >= 75) {
+        tierLabel = 'A healthy business, ready to scale.';
+        tierCopy = 'Your fundamentals are strong — predictable revenue, real leadership depth, and a business that runs without heroics. The next gains come from strategy and disciplined peer counsel.';
+      } else if (score >= 50) {
+        tierLabel = 'Solid footing, with clear constraints.';
+        tierCopy = 'The business is working, but a few constraints — owner dependence, pipeline predictability, or leadership bench — are capping growth. A guided plan would target those first.';
+      } else {
+        tierLabel = 'At the foundational stage.';
+        tierCopy = 'The fundamentals need attention before scaling. A confidential conversation can help you sequence the first, highest-leverage moves toward a durable business.';
+      }
+    } else {
+      if (score >= 75) {
+        tierLabel = 'A prime candidate for transformation.';
+        tierCopy = 'Your organization has the foundation and the mandate to move quickly. A focused engagement with Clarence can convert that readiness into measurable delivery gains.';
+      } else if (score >= 50) {
+        tierLabel = 'Strong potential, with clear constraints.';
+        tierCopy = 'You have real strengths to build on, and a small number of constraints doing most of the damage. A guided roadmap would target those first.';
+      } else {
+        tierLabel = 'At the foundational stage.';
+        tierCopy = 'The fundamentals need attention before scaling change. A confidential conversation can help you sequence the first, highest-leverage moves.';
+      }
+    }
+    return {
+      otherHref: isBiz ? 'Page Assessment.dc.html' : 'Page Assessment Business Health.dc.html',
+      otherLabel: isBiz ? 'LOOKING FOR THE AGILITY ASSESSMENT? \u2192' : 'LOOKING FOR THE BUSINESS HEALTH ASSESSMENT? \u2192',
+      eyebrow: set.eyebrow,
+      introTitle: set.introTitle,
+      introCopy: set.introCopy,
+      isIntro: screen === 'intro',
+      isQuestion: screen === 'question',
+      isResults: screen === 'results',
+      qNum: idx + 1,
+      qTitle: q.t,
+      options,
+      progressPct: ((idx) / 10 * 100) + '%',
+      score,
+      tierLabel,
+      tierCopy,
+      start: () => this.setState({ screen: 'question', idx: 0, picks: [] }),
+      back: () => {
+        if (idx === 0) this.setState({ screen: 'intro' });
+        else this.setState({ idx: idx - 1 });
+      },
+      restart: () => this.setState({ screen: 'intro', idx: 0, picks: [] })
+    };
+  }
+}
+</script>
+</body>
+</html>

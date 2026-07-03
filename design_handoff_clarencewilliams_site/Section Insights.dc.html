@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style> body { margin: 0; } </style>
+</helmet>
+
+<div id="insights" style="width: 1920px; background: #F7F4EE; color: #10233A; font-family: 'Archivo', sans-serif; box-sizing: border-box; padding: 100px 100px 96px; border-top: 1px solid #D8D3C8;" data-screen-label="Insights">
+  <div style="display: flex; justify-content: space-between; align-items: baseline;">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="width: 36px; height: 2px; background: #B0793F;"></div>
+      <span style="font-size: 14px; letter-spacing: 0.32em; color: #6B675F; font-weight: 600;">EXECUTIVE INSIGHTS</span>
+    </div>
+    <span style="font-size: 12px; letter-spacing: 0.14em; color: #9A958A;">RSS · CEO-ADVISORY-GROUP.COM — MANAGED BY ADMIN</span>
+  </div>
+  <div style="display: flex; justify-content: space-between; align-items: end; gap: 60px; margin-top: 28px;">
+    <h2 style="font-family: 'Cormorant Garamond', serif; font-size: 64px; font-weight: 500; line-height: 1.1; margin: 0;">From the <span style="font-style: italic; color: #B0793F;">newsletter.</span></h2>
+    <a href="https://ceo-advisory-group.com/newsletter/" style="font-size: 13px; letter-spacing: 0.18em; color: #B0793F; text-decoration: none; border-bottom: 1px solid #B0793F; padding-bottom: 4px; white-space: nowrap;">ALL ARTICLES →</a>
+  </div>
+
+  <!-- FORMAT A: Editorial list -->
+  <sc-if value="{{ isList }}" hint-placeholder-val="{{ true }}">
+    <div style="display: flex; flex-direction: column; margin-top: 56px;">
+      <sc-for list="{{ items }}" as="it" hint-placeholder-count="3">
+        <a href="{{ it.link }}" style="display: grid; grid-template-columns: 90px 190px 176px 1fr 60px; gap: 44px; align-items: center; padding: 30px 0; border-top: 1px solid #D8D3C8; text-decoration: none; color: #10233A;" style-hover="background: #F1ECE1;">
+          <span style="font-family: 'Cormorant Garamond', serif; font-size: 34px; color: #B0793F;">{{ it.num }}</span>
+          <span style="font-size: 13px; letter-spacing: 0.16em; color: #6B675F;">{{ it.dateLabel }}</span>
+          <img src="{{ it.thumb }}" alt="" style="width: 176px; height: 118px; object-fit: cover; display: block; background: #E9E2D4;">
+          <span>
+            <span style="font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 500; line-height: 1.25; display: block;">{{ it.title }}</span>
+            <span style="font-size: 15px; line-height: 1.6; color: #55514A; display: block; margin-top: 10px; max-width: 900px;">{{ it.excerpt }}</span>
+          </span>
+          <span style="font-size: 22px; color: #B0793F;">→</span>
+        </a>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <!-- FORMAT B: Card grid -->
+  <sc-if value="{{ isGrid }}" hint-placeholder-val="{{ false }}">
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px; margin-top: 56px;">
+      <sc-for list="{{ items }}" as="it" hint-placeholder-count="3">
+        <a href="{{ it.link }}" style="display: flex; flex-direction: column; background: #FFFFFF; border: 1px solid #D8D3C8; text-decoration: none; color: #10233A;" style-hover="border-color: #B0793F;">
+          <img src="{{ it.thumb }}" alt="" style="width: 100%; height: 240px; object-fit: cover; display: block; background: #E9E2D4;">
+          <span style="display: flex; flex-direction: column; gap: 14px; padding: 30px 30px 34px;">
+            <span style="font-size: 12px; letter-spacing: 0.16em; color: #6B675F;">{{ it.dateLabel }}</span>
+            <span style="font-family: 'Cormorant Garamond', serif; font-size: 27px; font-weight: 500; line-height: 1.3;">{{ it.title }}</span>
+            <span style="font-size: 13px; letter-spacing: 0.16em; color: #B0793F; margin-top: 6px;">READ →</span>
+          </span>
+        </a>
+      </sc-for>
+    </div>
+  </sc-if>
+
+  <!-- FORMAT C: Feature + list -->
+  <sc-if value="{{ isFeature }}" hint-placeholder-val="{{ false }}">
+    <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 72px; margin-top: 56px;">
+      <a href="{{ feature.link }}" style="display: flex; flex-direction: column; text-decoration: none; color: #10233A;">
+        <img src="{{ feature.thumb }}" alt="" style="width: 100%; height: 420px; object-fit: cover; display: block; background: #E9E2D4;">
+        <span style="font-size: 12px; letter-spacing: 0.16em; color: #6B675F; margin-top: 26px;">{{ feature.dateLabel }} — FEATURED</span>
+        <span style="font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 500; line-height: 1.2; margin-top: 14px;">{{ feature.title }}</span>
+        <span style="font-size: 16px; line-height: 1.65; color: #55514A; margin-top: 14px;">{{ feature.excerpt }}</span>
+      </a>
+      <div style="display: flex; flex-direction: column;">
+        <sc-for list="{{ rest }}" as="it" hint-placeholder-count="2">
+          <a href="{{ it.link }}" style="display: flex; flex-direction: column; gap: 10px; padding: 28px 0; border-top: 1px solid #D8D3C8; text-decoration: none; color: #10233A;" style-hover="background: #F1ECE1;">
+            <span style="font-size: 12px; letter-spacing: 0.16em; color: #6B675F;">{{ it.dateLabel }}</span>
+            <span style="font-family: 'Cormorant Garamond', serif; font-size: 27px; font-weight: 500; line-height: 1.3;">{{ it.title }}</span>
+            <span style="font-size: 13px; letter-spacing: 0.16em; color: #B0793F;">READ →</span>
+          </a>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 1920 },
+  &quot;feedUrl&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;https://ceo-advisory-group.com/newsletter/feed/rss&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Admin — Feed&quot; },
+  &quot;articleCount&quot;: { &quot;editor&quot;: &quot;range&quot;, &quot;default&quot;: 3, &quot;min&quot;: 1, &quot;max&quot;: 9, &quot;step&quot;: 1, &quot;tsType&quot;: &quot;number&quot;, &quot;section&quot;: &quot;Admin — Feed&quot; },
+  &quot;layout&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;default&quot;: &quot;Editorial List&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;options&quot;: [&quot;Editorial List&quot;, &quot;Card Grid&quot;, &quot;Feature + List&quot;], &quot;section&quot;: &quot;Admin — Feed&quot; }
+}">
+class Component extends DCLogic {
+  state = { live: null };
+
+  fallback() {
+    const base = 'https://ceo-advisory-group.com/newsletter/';
+    const img = 'https://my.funnelpages.com/user-data/gallery/241/';
+    return [
+      { title: '10 Essential Factors to Evaluate Before Selling Your Business', date: '2026-07-03', link: base + '10-essential-factors-to-evaluate-before-selling-your-business', thumb: img + '1783051592-6a47354806ab0-ai-thumb.jpg', excerpt: 'In today\u2019s challenging economic environment, the decision to sell your business shouldn\u2019t be taken lightly. Knowing why you\u2019re selling is the first step.' },
+      { title: 'Unlock Enduring Leadership Success: Five Key Choices for Leaders', date: '2026-07-02', link: base + 'unlock-enduring-leadership-success-five-key-choices-for-leaders', thumb: img + '1782948770-6a45a3a225cdc-ai-thumb.jpg', excerpt: 'True success runs deeper than accolades and milestones \u2014 it is grounded in the choices leaders make every day.' },
+      { title: 'Small Business Confidence Soars to Record High Despite Rising Wage Pressures', date: '2026-06-29', link: base + 'small-business-confidence-soars-to-record-high-despite-rising-wage-pressures', thumb: img + '1782742402-6a427d82337e0-ai-thumb.jpg', excerpt: 'Small business confidence is reaching unprecedented heights, according to the latest MetLife and U.S. Chamber of Commerce survey.' },
+      { title: 'Maximizing Leadership Development ROI: Unleashing $7 Returns for CEOs', date: '2026-06-26', link: base + 'maximizing-leadership-development-roi-unleashing-7-returns-for-ceos', thumb: img + '1782435479-6a3dce9784230-ai-thumb.jpg', excerpt: 'Every dollar invested in leadership development has the potential to return $7 in value \u2014 shifting the conversation from training to strategic investment.' },
+      { title: 'Harnessing Leadership Resilience: Insights for Today\u2019s CEOs and Business Leaders', date: '2026-06-23', link: base + 'harnessing-leadership-resilience-insights-for-today-s-ceos-and-business-leaders', thumb: img + '1782229927-6a3aaba75031e-ai-thumb.jpg', excerpt: 'In an era marked by rapid change, resilience has emerged as a pivotal skill for CEOs and business leaders alike.' },
+      { title: 'Unlocking Business Valuation: Essential Insights for CEOs and Owners', date: '2026-06-19', link: base + 'unlocking-business-valuation-essential-insights-for-ceos-and-owners', thumb: img + '1781823280-6a347730175a0-ai-thumb.jpg', excerpt: 'Grasping the nuances of business valuation has become a critical competence for CEOs and business owners alike.' },
+      { title: 'Revolutionize Your Organization with DIY AI: A CEO\u2019s Toolkit', date: '2026-06-16', link: base + 'revolutionize-your-organization-with-diy-ai-a-ceo-s-toolkit', thumb: img + '1781616758-6a3150762ba8c-ai-thumb.jpg', excerpt: 'DIY AI platforms empower employees at every level to enhance productivity while cultivating a flexible work environment.' },
+      { title: 'Why Understanding Leadership Plateaus is Key to Becoming a Better CEO', date: '2026-06-16', link: base + 'why-understanding-leadership-plateaus-is-key-to-becoming-a-better-ceo', thumb: img + '1781608296-6a312f68c2b6c-ai-thumb.jpg', excerpt: 'Many CEOs hit a point where growth stalls \u2014 not from lack of effort, but from sticking to familiar methods that once worked.' },
+      { title: 'Why CEOs Should Become Vistage Chairs: A Mentor\u2019s Next Chapter', date: '2026-06-12', link: base + 'why-ceos-should-become-vistage-chairs-a-mentor-s-next-chapter', thumb: img + '1781205824-6a2b0b40e6964-ai-thumb.jpg', excerpt: 'For successful entrepreneurs, the thrill of leading a company eventually segues into the desire to nurture the next wave of leaders.' }
+    ];
+  }
+
+  componentDidMount() {
+    const url = this.props.feedUrl ?? 'https://ceo-advisory-group.com/newsletter/feed/rss';
+    fetch(url).then(r => r.text()).then(text => {
+      const doc = new DOMParser().parseFromString(text, 'text/xml');
+      const items = Array.from(doc.getElementsByTagName('item')).map(item => {
+        const get = (tag) => { const el = item.getElementsByTagName(tag)[0]; return el ? el.textContent.trim() : ''; };
+        let thumb = '';
+        const media = item.getElementsByTagName('media:thumbnail')[0] || item.getElementsByTagNameNS('*', 'thumbnail')[0];
+        if (media) thumb = media.getAttribute('url') || '';
+        return { title: get('title'), link: get('link'), date: get('pubDate'), thumb, excerpt: get('description').replace(/^\s*Update\s*/i, '').slice(0, 150) + '\u2026' };
+      }).filter(i => i.title);
+      if (items.length) this.setState({ live: items });
+    }).catch(() => { /* CORS or offline: keep fallback */ });
+  }
+
+  renderVals() {
+    const count = Math.max(1, Math.min(9, this.props.articleCount ?? 3));
+    const layout = this.props.layout ?? 'Editorial List';
+    const fmt = (d) => {
+      const dt = new Date(d);
+      return isNaN(dt) ? '' : dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase();
+    };
+    const items = (this.state.live || this.fallback()).slice(0, count).map((it, i) => ({
+      ...it, num: String(i + 1).padStart(2, '0'), dateLabel: fmt(it.date)
+    }));
+    return {
+      items,
+      feature: items[0] || {},
+      rest: items.slice(1),
+      isList: layout === 'Editorial List',
+      isGrid: layout === 'Card Grid',
+      isFeature: layout === 'Feature + List'
+    };
+  }
+}
+</script>
+</body>
+</html>

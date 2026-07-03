@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #1A1A1A; }
+</style>
+</helmet>
+
+<div style="width: 1920px; height: 1080px; background: {{ bg }}; color: {{ ink }}; font-family: 'Archivo', sans-serif; position: relative; overflow: hidden; box-sizing: border-box;" data-screen-label="Hero">
+
+  <!-- Backdrop circle behind portrait -->
+  <div style="position: absolute; right: 40px; bottom: -320px; width: 1040px; height: 1040px; border-radius: 50%; background: {{ halo }};"></div>
+  <div style="position: absolute; right: 8px; bottom: -352px; width: 1104px; height: 1104px; border-radius: 50%; border: 1px solid {{ accent }}; opacity: 0.55;"></div>
+
+  <!-- Ascending steps motif, far left bottom -->
+  <svg style="position: absolute; left: 100px; bottom: 0;" width="300" height="72" viewBox="0 0 300 72" aria-hidden="true">
+    <rect x="0" y="54" width="60" height="18" fill="{{ step1 }}"></rect>
+    <rect x="80" y="36" width="60" height="36" fill="{{ step2 }}"></rect>
+    <rect x="160" y="18" width="60" height="54" fill="{{ step3 }}"></rect>
+    <rect x="240" y="0" width="60" height="72" fill="{{ accent }}"></rect>
+  </svg>
+
+  <!-- Top bar -->
+  <div style="position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; padding: 40px 100px; z-index: 3;">
+    <div style="font-family: 'Cormorant Garamond', serif; font-size: 28px; letter-spacing: 0.08em;">C<span style="color: {{ accent }};">·</span>W</div>
+    <div style="display: flex; gap: 44px; font-size: 14px; letter-spacing: 0.18em; color: {{ sub }}; font-weight: 500;">
+      <span>CONSULTING</span><span>DELIVERY</span><span>BRAND</span><span style="color: {{ ink }}; border-bottom: 1px solid {{ accent }}; padding-bottom: 4px;">CONTACT</span>
+    </div>
+  </div>
+
+  <!-- Left content -->
+  <div style="position: absolute; left: 100px; top: 200px; width: 880px; z-index: 3; display: flex; flex-direction: column; align-items: flex-start;">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <div style="width: 36px; height: 2px; background: {{ accent }};"></div>
+      <span style="font-size: 14px; letter-spacing: 0.32em; color: {{ sub }}; font-weight: 600;">BUSINESS &amp; MANAGEMENT CONSULTANT</span>
+    </div>
+    <h1 style="font-family: 'Cormorant Garamond', serif; font-size: 96px; font-weight: 500; line-height: 1.0; margin: 30px 0 0; white-space: nowrap;">Clarence <span style="font-style: italic; color: {{ accent }};">Williams</span></h1>
+    <p style="font-size: 23px; line-height: 1.6; color: {{ sub }}; margin: 34px 0 0; max-width: 640px; text-wrap: pretty;">Your business is the hero of the story. I'm the guide — with a clear plan from idea to production.</p>
+    <div style="display: flex; gap: 20px; margin-top: 44px;">
+      <div style="background: {{ accent }}; color: {{ onAccent }}; font-size: 15px; font-weight: 600; letter-spacing: 0.14em; padding: 20px 36px; cursor: pointer;">BOOK A CONSULTATION</div>
+      <div style="border: 1px solid {{ sub }}; color: {{ ink }}; font-size: 15px; font-weight: 600; letter-spacing: 0.14em; padding: 20px 36px; cursor: pointer;">EXPLORE SERVICES</div>
+    </div>
+    <!-- Pillars -->
+    <div style="display: flex; gap: 48px; margin-top: 72px; padding-top: 30px; border-top: 1px solid {{ rule }};">
+      <div style="display: flex; flex-direction: column; gap: 8px; width: 210px;">
+        <span style="font-size: 13px; color: {{ accent }}; font-weight: 700; letter-spacing: 0.16em;">01</span>
+        <span style="font-size: 17px; font-weight: 600;">Business Consulting</span>
+        <span style="font-size: 13.5px; color: {{ sub }}; line-height: 1.5;">Mid-market, $5M–$250M</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px; width: 210px;">
+        <span style="font-size: 13px; color: {{ accent }}; font-weight: 700; letter-spacing: 0.16em;">02</span>
+        <span style="font-size: 17px; font-weight: 600;">Software Delivery Leadership</span>
+        <span style="font-size: 13.5px; color: {{ sub }}; line-height: 1.5;">Idea → production</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 8px; width: 210px;">
+        <span style="font-size: 13px; color: {{ accent }}; font-weight: 700; letter-spacing: 0.16em;">03</span>
+        <span style="font-size: 17px; font-weight: 600;">Brand &amp; Marketing</span>
+        <span style="font-size: 13.5px; color: {{ sub }}; line-height: 1.5;">Authority messaging</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Portrait cutout (drag a new image to replace) -->
+  <div style="position: absolute; right: 120px; bottom: 0; width: 720px; height: 940px; z-index: 2; display: flex;">
+    <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="hero-cutout" shape="rect" fit="contain" position="50% 100%" src="uploads/clarence-williams-6125-2-jpg-718e201e03b0eca2e087f0-original2.png" placeholder="Drop portrait cutout (transparent PNG)" hint-size="720px,940px" dc-props="{{ slotFill }}" style="width: 100%; height: 100%;"></x-import>
+  </div>
+
+  <!-- Fig caption -->
+  <div style="position: absolute; right: 100px; bottom: 44px; z-index: 3; font-size: 12px; letter-spacing: 0.24em; color: {{ sub }};">CLARENCE WILLIAMS — THE GUIDE</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;$preview&quot;: { &quot;width&quot;: 1920, &quot;height&quot;: 1080 },
+  &quot;backdrop&quot;: {
+    &quot;editor&quot;: &quot;enum&quot;,
+    &quot;default&quot;: &quot;Midnight Navy&quot;,
+    &quot;tsType&quot;: &quot;string&quot;,
+    &quot;options&quot;: [&quot;Midnight Navy&quot;, &quot;Warm Charcoal&quot;, &quot;Ivory&quot;, &quot;Terracotta&quot;],
+    &quot;section&quot;: &quot;Background&quot;
+  }
+}">
+class Component extends DCLogic {
+  renderVals() {
+    const themes = {
+      'Midnight Navy': {
+        bg: '#0B1626', ink: '#EDE6D6', sub: '#A9B4C6', accent: '#C9A24B', onAccent: '#0B1626',
+        halo: '#152238', rule: '#2A3B52', step1: '#1B2C44', step2: '#2A3B52', step3: '#3A4E6B'
+      },
+      'Ivory': {
+        bg: '#F7F4EE', ink: '#10233A', sub: '#6B675F', accent: '#B0793F', onAccent: '#F7F4EE',
+        halo: '#ECE5D8', rule: '#D8D3C8', step1: '#E3DCCD', step2: '#D8CDB9', step3: '#C9B694'
+      },
+      'Warm Charcoal': {
+        bg: '#26221E', ink: '#F1EAE0', sub: '#A79D8F', accent: '#C97E4A', onAccent: '#26221E',
+        halo: '#322D27', rule: '#453E36', step1: '#322D27', step2: '#453E36', step3: '#5C5248'
+      },
+      'Terracotta': {
+        bg: '#F6EFE6', ink: '#3A2E26', sub: '#8C7A6B', accent: '#B4552D', onAccent: '#F6EFE6',
+        halo: '#EFE2D2', rule: '#D8C8B4', step1: '#E9DAC6', step2: '#DDC5A9', step3: '#D0AC85'
+      }
+    };
+    const t = themes[this.props.backdrop] ?? themes['Midnight Navy'];
+    return {
+      ...t,
+      slotFill: { style: { width: '100%', height: '100%', display: 'block' } }
+    };
+  }
+}
+</script>
+</body>
+</html>

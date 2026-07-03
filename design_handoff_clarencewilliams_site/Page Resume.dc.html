@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" href="assets/logo-gold.png">
+<style> body { margin: 0; background: #0B1626; } </style>
+</helmet>
+
+<div style="width: 1920px; min-height: 1080px; background: #0B1626; color: #EDE6D6; font-family: 'Archivo', sans-serif; display: flex; flex-direction: column;" data-screen-label="Resume Page">
+
+  <!-- Nav -->
+  <div style="background: #0B1626; border-bottom: 1px solid #2A3B52; display: flex; justify-content: space-between; align-items: center; padding: 18px 100px;">
+    <div style="display: flex; align-items: center; gap: 20px;">
+      <img src="assets/logo-gold.png" alt="Clarence Williams monogram" style="height: 36px; width: 36px; display: block;">
+      <span style="font-size: 14px; letter-spacing: 0.24em; color: #EDE6D6; font-weight: 600;">CLARENCE WILLIAMS</span>
+    </div>
+    <div style="display: flex; align-items: center; gap: 36px; font-size: 13px; letter-spacing: 0.16em; font-weight: 500;">
+      <a href="Page Home.dc.html" style="color: #A9B4C6; text-decoration: none;">HOME</a>
+      <a href="Page About.dc.html" style="color: #A9B4C6; text-decoration: none;">ABOUT</a>
+      <a href="Page Home.dc.html" style="background: #C9A24B; color: #0B1626; padding: 12px 24px; text-decoration: none; font-weight: 600;">BOOK A CALL</a>
+    </div>
+  </div>
+
+  <div style="flex: 1; display: grid; grid-template-columns: 1fr 760px; gap: 110px; padding: 100px 100px 110px; align-items: start;">
+
+    <!-- Left: intro -->
+    <div style="display: flex; flex-direction: column; align-items: flex-start;">
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <div style="width: 36px; height: 2px; background: #C9A24B;"></div>
+        <span style="font-size: 14px; letter-spacing: 0.32em; color: #A9B4C6; font-weight: 600;">CURRICULUM VITAE</span>
+      </div>
+      <h1 style="font-family: 'Cormorant Garamond', serif; font-size: 84px; font-weight: 500; line-height: 1.06; margin: 30px 0 0; text-wrap: balance;">Request my <span style="font-style: italic; color: #C9A24B;">current resume.</span></h1>
+      <p style="font-size: 21px; line-height: 1.7; color: #A9B4C6; margin: 32px 0 0; max-width: 680px; text-wrap: pretty;">I keep my resume current — and where a role calls for it, tailored. Tell me a little about the opportunity, and I will send the right version directly to your inbox.</p>
+      <div style="display: flex; flex-direction: column; gap: 18px; margin-top: 52px; padding-top: 36px; border-top: 1px solid #2A3B52; align-self: stretch; max-width: 680px;">
+        <div style="display: flex; gap: 18px; align-items: baseline;">
+          <span style="color: #C9A24B; font-family: 'Cormorant Garamond', serif; font-size: 24px;">—</span>
+          <span style="font-size: 17px; line-height: 1.6; color: #EDE6D6;">MBA, Technology Management · PMP® · RTE® · SPC®</span>
+        </div>
+        <div style="display: flex; gap: 18px; align-items: baseline;">
+          <span style="color: #C9A24B; font-family: 'Cormorant Garamond', serif; font-size: 24px;">—</span>
+          <span style="font-size: 17px; line-height: 1.6; color: #EDE6D6;">Senior technology leadership — enterprise agile transformations</span>
+        </div>
+        <div style="display: flex; gap: 18px; align-items: baseline;">
+          <span style="color: #C9A24B; font-family: 'Cormorant Garamond', serif; font-size: 24px;">—</span>
+          <span style="font-size: 17px; line-height: 1.6; color: #EDE6D6;">Vistage Chair · CEO Advisory Group facilitator · author</span>
+        </div>
+      </div>
+      <span style="font-size: 13px; color: #7C8AA0; margin-top: 40px;">Requests are delivered to Clarence directly. Strictly confidential.</span>
+    </div>
+
+    <!-- Right: request form -->
+    <div style="background: #0E1B2E; border: 1px solid #2A3B52; padding: 56px 56px 52px; display: flex; flex-direction: column;">
+      <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+        <span style="font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 500;">Resume request</span>
+        <div style="display: flex; flex-direction: column; gap: 26px; margin-top: 40px;">
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <span style="font-size: 12px; letter-spacing: 0.2em; color: #A9B4C6; font-weight: 600;">FULL NAME *</span>
+            <input value="{{ name }}" onChange="{{ setName }}" placeholder="Jane Smith" style="background: #0B1626; border: 1px solid #2A3B52; color: #EDE6D6; font-family: 'Archivo', sans-serif; font-size: 17px; padding: 16px 18px; outline: none;">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <span style="font-size: 12px; letter-spacing: 0.2em; color: #A9B4C6; font-weight: 600;">EMAIL *</span>
+            <input value="{{ email }}" onChange="{{ setEmail }}" placeholder="jane@company.com" style="background: #0B1626; border: 1px solid #2A3B52; color: #EDE6D6; font-family: 'Archivo', sans-serif; font-size: 17px; padding: 16px 18px; outline: none;">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <span style="font-size: 12px; letter-spacing: 0.2em; color: #A9B4C6; font-weight: 600;">COMPANY / ORGANIZATION</span>
+            <input value="{{ company }}" onChange="{{ setCompany }}" placeholder="Company name" style="background: #0B1626; border: 1px solid #2A3B52; color: #EDE6D6; font-family: 'Archivo', sans-serif; font-size: 17px; padding: 16px 18px; outline: none;">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <span style="font-size: 12px; letter-spacing: 0.2em; color: #A9B4C6; font-weight: 600;">ROLE / OPPORTUNITY *</span>
+            <textarea value="{{ role }}" onChange="{{ setRole }}" placeholder="Tell me about the role or engagement — a link to the posting works too." rows="4" style="background: #0B1626; border: 1px solid #2A3B52; color: #EDE6D6; font-family: 'Archivo', sans-serif; font-size: 17px; padding: 16px 18px; outline: none; resize: vertical;"></textarea>
+          </div>
+          <sc-if value="{{ showError }}" hint-placeholder-val="{{ false }}">
+            <span style="font-size: 14px; color: #D08770;">Please provide your name, email, and a note about the role.</span>
+          </sc-if>
+          <div onClick="{{ submit }}" style="background: #C9A24B; color: #0B1626; font-size: 15px; font-weight: 600; letter-spacing: 0.14em; padding: 20px 0; text-align: center; cursor: pointer; margin-top: 6px;" style-hover="opacity: 0.9;">SUBMIT REQUEST</div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+        <div style="display: flex; flex-direction: column; align-items: center; text-align: center; padding: 60px 0;">
+          <div style="width: 72px; height: 72px; border-radius: 50%; border: 1px solid #C9A24B; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 34px; color: #C9A24B;">✓</div>
+          <span style="font-family: 'Cormorant Garamond', serif; font-size: 40px; font-weight: 500; margin-top: 30px;">Request received.</span>
+          <p style="font-size: 18px; line-height: 1.7; color: #A9B4C6; margin: 18px 0 0; max-width: 460px; text-wrap: pretty;">Thank you, {{ sentName }}. Clarence will review the opportunity and send the appropriate resume to your inbox shortly.</p>
+          <div onClick="{{ reset }}" style="font-size: 13px; letter-spacing: 0.18em; color: #7C8AA0; margin-top: 36px; cursor: pointer;">SUBMIT ANOTHER REQUEST</div>
+        </div>
+      </sc-if>
+    </div>
+  </div>
+
+  <!-- Slim footer -->
+  <div style="display: flex; justify-content: space-between; align-items: center; padding: 28px 100px; border-top: 1px solid #2A3B52; font-size: 12px; color: #7C8AA0; letter-spacing: 0.08em;">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <img src="assets/logo-gold.png" alt="" style="height: 24px; width: 24px; display: block;">
+      <span>© 2026 CLARENCEWILLIAMS.COM</span>
+    </div>
+    <span>CW@CLARENCEWILLIAMS.COM · (678) 831-5700</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { name: '', email: '', company: '', role: '', sent: false, error: false, sentName: '' };
+
+  renderVals() {
+    const s = this.state;
+    return {
+      name: s.name, email: s.email, company: s.company, role: s.role,
+      setName: (e) => this.setState({ name: e.target.value }),
+      setEmail: (e) => this.setState({ email: e.target.value }),
+      setCompany: (e) => this.setState({ company: e.target.value }),
+      setRole: (e) => this.setState({ role: e.target.value }),
+      notSent: !s.sent,
+      sent: s.sent,
+      sentName: s.sentName || 'there',
+      showError: s.error,
+      submit: () => {
+        if (!s.name.trim() || !s.email.trim() || !s.role.trim()) {
+          this.setState({ error: true });
+          return;
+        }
+        this.setState({ sent: true, error: false, sentName: s.name.trim().split(' ')[0] });
+      },
+      reset: () => this.setState({ sent: false, name: '', email: '', company: '', role: '', error: false })
+    };
+  }
+}
+</script>
+</body>
+</html>
