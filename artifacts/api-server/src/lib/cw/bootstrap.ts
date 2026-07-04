@@ -25,6 +25,7 @@ export function ensureBootstrapped(): Promise<void> {
 async function bootstrap() {
   const db = await getDb();
   await seedIfEmpty(db);
+  await seedLegalPagesIfMissing(db);
 }
 
 async function seedIfEmpty(db: Awaited<ReturnType<typeof getDb>>) {
@@ -170,6 +171,102 @@ async function seedIfEmpty(db: Awaited<ReturnType<typeof getDb>>) {
   await seedAssessments(db);
 
   await db.insert(schema.kv).values({ key: "seeded.v1", value: new Date().toISOString() });
+}
+
+/**
+ * Adds the privacy and terms pages to databases seeded before those pages
+ * existed. Runs behind its own kv flag (NOT seeded.v1, which is already set
+ * in production) so it executes exactly once per database — a slug-existence
+ * check instead would resurrect the pages on every boot if they were ever
+ * deleted in the admin. Content is a draft for Clarence's review, editable
+ * from the dashboard like any other page.
+ */
+async function seedLegalPagesIfMissing(db: Awaited<ReturnType<typeof getDb>>) {
+  const flag = await db.select().from(schema.kv).where(eq(schema.kv.key, "seeded.legalPages.v1"));
+  if (flag.length > 0) return;
+
+  logger.info("Seeding legal pages (privacy, terms)");
+
+  const legalPages: Array<{
+    slug: string;
+    title: string;
+    metaTitle: string;
+    metaDescription: string;
+    headline: string;
+    paragraphs: string[];
+  }> = [
+    {
+      slug: "privacy",
+      title: "Privacy Policy",
+      metaTitle: "Privacy Policy — Clarence Williams",
+      metaDescription:
+        "How Clarence Williams collects, uses, and protects the information you share through this site.",
+      headline: "Privacy Policy",
+      paragraphs: [
+        "Last updated: July 2026. This website is operated by Clarence Williams. This policy explains what information the site collects, how it is used, and the choices you have.",
+        "Information you provide. When you complete an assessment or request a resume, you provide your name, email address, phone number, company or organization, and details about your role or opportunity. The site does not offer user accounts and does not collect payment information.",
+        "How your information is used. The information you submit is used to respond to your inquiry, deliver your assessment results, send the resume you requested, and follow up about services you may be interested in. It is not used for automated marketing lists.",
+        "Storage and retention. Submissions are stored in a secured database and retained only as long as needed for the purposes above. You may request deletion at any time.",
+        "Sharing. Your information is never sold. It is shared only with the infrastructure providers that host this site and deliver its email, and only as needed to operate the site.",
+        "Cookies. The public site does not use advertising or tracking cookies. A single functional cookie is used to keep the site administrator signed in to the administration area.",
+        "Your choices. You may email at any time to review, correct, or delete the information you have submitted.",
+        "Contact. Questions about this policy or your information: emailme@clarencewilliams.com.",
+      ],
+    },
+    {
+      slug: "terms",
+      title: "Terms of Service",
+      metaTitle: "Terms of Service — Clarence Williams",
+      metaDescription: "Terms governing your use of clarencewilliams.com.",
+      headline: "Terms of Service",
+      paragraphs: [
+        "Last updated: July 2026. By using this website you agree to these terms. If you do not agree, please do not use the site.",
+        "Informational content. The content on this site, including assessment results and scores, is provided for general informational purposes only. It does not constitute professional, financial, or legal advice, and using the site does not create a consulting or advisory relationship.",
+        "Intellectual property. All content on this site — text, assessments, branding, and design — belongs to Clarence Williams and may not be reproduced without permission.",
+        "Acceptable use. You agree not to misuse the site, including submitting false information through its forms or attempting to interfere with its operation.",
+        "Limitation of liability. The site is provided as-is, without warranties of any kind. To the fullest extent permitted by law, Clarence Williams is not liable for any damages arising from your use of the site or reliance on its content.",
+        "Contact. Questions about these terms: emailme@clarencewilliams.com.",
+      ],
+    },
+  ];
+
+  for (const p of legalPages) {
+    const [page] = await db
+      .insert(schema.pages)
+      .values({
+        slug: p.slug,
+        title: p.title,
+        metaTitle: p.metaTitle,
+        metaDescription: p.metaDescription,
+        status: "published",
+        showInNav: false,
+        navOrder: 200,
+        includeInSitemap: true,
+        footerStyle: "slim",
+        createdBy: "admin",
+      })
+      .onConflictDoNothing()
+      .returning();
+    if (!page) continue;
+    // Full prose content lives in overrides so these pages are independent
+    // of the shared per-type section content.
+    await db.insert(schema.pageSections).values({
+      pageId: page.id,
+      position: 0,
+      sectionType: "prose",
+      overrides: {
+        background: "ivory",
+        eyebrow: "LEGAL",
+        headline: p.headline,
+        paragraphs: p.paragraphs,
+      },
+    });
+  }
+
+  await db
+    .insert(schema.kv)
+    .values({ key: "seeded.legalPages.v1", value: new Date().toISOString() })
+    .onConflictDoNothing();
 }
 
 /**
