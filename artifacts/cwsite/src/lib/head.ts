@@ -1,7 +1,10 @@
 /**
  * Per-page document head updates. This runs client-side, so only
- * JS-executing crawlers (Google) see these values — link-preview crawlers
- * (LinkedIn, Facebook) read the static tags baked into index.html.
+ * JS-executing crawlers (Google) and real users see these values applied
+ * here. Social link-preview crawlers (LinkedIn, Facebook, iMessage, Slack)
+ * don't run JS — in production the api-server injects the same DB-backed
+ * meta into the served HTML per route (api-server/src/lib/cw/head-meta.ts),
+ * so shared deep links render the right card. Keep the two in sync.
  */
 
 function upsertMeta(attr: "name" | "property", key: string, content: string): void {

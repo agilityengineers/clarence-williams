@@ -6,6 +6,7 @@ Premium consulting site (navy/gold brand) for Clarence Williams — public CMS-d
 
 - `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
 - `pnpm --filter @workspace/cwsite run dev` — run the public site + admin SPA
+- Production: build both (`pnpm run build`), then run **only** the api-server (`pnpm --filter @workspace/api-server run start`) and route all traffic to it. The api-server serves `/api`, the built static assets, and the SPA HTML with per-route social meta injection (see below). Set `SITE_URL` and build the SPA with `BASE_PATH=/`.
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
@@ -27,6 +28,7 @@ Premium consulting site (navy/gold brand) for Clarence Williams — public CMS-d
 - **Server** (`artifacts/api-server/src/lib/cw` + `src/routes/cw-*.ts`): JWT `cw_session` httpOnly cookie auth (jose), pages/sections CRUD, assessment scoring, media stored as bytea served at `/api/media/:id`, RSS insights proxy, API keys for the bearer-auth `/api/v1` surface.
 - **Admin password reset** (`lib/cw/password-reset.ts`, `POST /api/auth/forgot-password` + `/api/auth/reset-password`): email-based, single-use, expiring (30 min) tokens — only the SHA-256 hash is stored, the link is only ever emailed to the configured admin. Requests are rate-limited and responses are non-enumerating (identical whether or not the email matches). Completing a reset changes the password hash, which rotates the session fingerprint and thereby revokes every existing session. Reset UI at `/admin/forgot-password` + `/admin/reset-password` (unauthenticated).
 - **Admin provisioning precedence** (`lib/cw/bootstrap.ts` → `seedAdminFromSecrets`): `ADMIN_EMAIL`/`ADMIN_PASSWORD` secrets seed the admin **only when no admin row exists** (first boot on a fresh DB). Once an admin exists its password hash is app-owned, so a self-service reset survives restarts/redeploys — boot never re-hashes the secret over it. Recovery is the "Forgot password?" flow; re-seeding from secrets requires an empty `admin_users` table (break-glass).
+- **Social link previews**: the SPA sets per-page meta client-side (`cwsite/src/lib/head.ts` `applyPageMeta`), which JS crawlers (Google) and users see. Social preview crawlers (LinkedIn, Facebook, iMessage, Slack) don't run JS, so in production the api-server serves the SPA and injects the same DB-backed meta into the served HTML per route (`api-server/src/client-serving.ts` + `src/lib/cw/head-meta.ts`), covering the same public routes as `/api/sitemap.xml`. Requires routing the site through the api-server (see Run & Operate). The layer no-ops when the client build is absent (`CLIENT_DIR` overrides its location), so API-only runs and local dev are unaffected.
 - Bootstrap/seed runs on API startup (`lib/cw/bootstrap.ts`); CORS restricted to first-party Replit domains.
 - OpenAPI codegen (Orval) is NOT used for the cw routes — they are a direct Express port.
 
