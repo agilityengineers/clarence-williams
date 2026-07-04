@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import pinoHttp from "pino-http";
 import router from "./routes";
 import { setupClientServing } from "./client-serving";
+import { canonicalHostRedirect } from "./lib/cw/canonical-host";
 import { logger } from "./lib/logger";
 
 const app: Express = express();
@@ -29,6 +30,10 @@ app.use(
     },
   }),
 );
+// Consolidate SEO onto a single canonical domain: 301 any other host to
+// SITE_URL. No-op unless SITE_URL is set (dev/preview unaffected); skips
+// /api and non-GET so the API and health checks are never redirected.
+app.use(canonicalHostRedirect);
 // Same-origin API (served behind the workspace proxy). Only allow known
 // first-party origins instead of reflecting arbitrary ones.
 const allowedOrigins = new Set(

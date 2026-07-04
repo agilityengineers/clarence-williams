@@ -1,2 +1,3 @@
 - [Hero halo flush-bottom](hero-halo-flush.md) — portrait cutout + circular halo need a shared overflow-hidden clip plane wider than the circle, with the circle's broad middle (not its tip) at the clip line.
 - [cwsite prod single-origin](cwsite-prod-single-origin.md) — in prod the cwsite service runs the api-server bundle (serves /api + SPA + per-route social meta); api-server is dev-only. Don't give api-server the "/" path in dev.
+- [cwsite canonical domain SEO](cwsite-canonical-domain-seo.md) — single-domain SEO via SITE_URL: host 301 redirect gated on SITE_URL (never dev/preview), canonical tag, and SITE_URL must be in BOTH prod build.env and run.env.

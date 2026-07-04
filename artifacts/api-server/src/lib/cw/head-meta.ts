@@ -102,12 +102,25 @@ function setMeta(html: string, attr: "name" | "property", key: string, content: 
   return re.test(html) ? html.replace(re, tag) : html.replace("</head>", `    ${tag}\n  </head>`);
 }
 
+/**
+ * Replace an existing `<link rel="canonical" ...>` element, or insert one
+ * before </head> if none exists. Self-referencing canonical pointing at the
+ * page's URL on the canonical domain (SITE_URL) tells search engines which
+ * domain to index when several domains serve identical content.
+ */
+function setCanonical(html: string, href: string): string {
+  const tag = `<link rel="canonical" href="${escapeAttr(href)}" />`;
+  const re = /<link\b[^>]*\brel=["']canonical["'][^>]*>/i;
+  return re.test(html) ? html.replace(re, tag) : html.replace("</head>", `    ${tag}\n  </head>`);
+}
+
 /** Rewrite index.html's head with the resolved per-route meta. */
 export function injectHeadMeta(html: string, meta: HeadMeta): string {
   let out = setTitle(html, meta.title);
   out = setMeta(out, "property", "og:title", meta.title);
   out = setMeta(out, "name", "twitter:title", meta.title);
   out = setMeta(out, "property", "og:url", meta.ogUrl);
+  out = setCanonical(out, meta.ogUrl);
   if (meta.description) {
     out = setMeta(out, "name", "description", meta.description);
     out = setMeta(out, "property", "og:description", meta.description);

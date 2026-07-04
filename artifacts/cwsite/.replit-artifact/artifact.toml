@@ -25,8 +25,13 @@ run = "pnpm --filter @workspace/cwsite run dev"
 [services.production.build]
 args = ["sh", "-c", "pnpm --filter @workspace/cwsite run build && pnpm --filter @workspace/api-server run build"]
 
+# SITE_URL is the canonical domain. It must be present at BUILD time (bakes
+# absolute Open Graph URLs + robots.txt Sitemap into the static output) and
+# at RUN time (drives canonical <link>, sitemap, and the canonical-host 301
+# redirect). Setting it here activates the single-domain SEO behavior.
 [services.production.build.env]
 NODE_ENV = "production"
+SITE_URL = "https://clarencewilliams.com"
 
 [services.production.run]
 args = ["node", "--enable-source-maps", "artifacts/api-server/dist/index.mjs"]
@@ -34,6 +39,7 @@ args = ["node", "--enable-source-maps", "artifacts/api-server/dist/index.mjs"]
 [services.production.run.env]
 NODE_ENV = "production"
 PORT = "18686"
+SITE_URL = "https://clarencewilliams.com"
 
 [services.production.health.startup]
 path = "/api/healthz"
