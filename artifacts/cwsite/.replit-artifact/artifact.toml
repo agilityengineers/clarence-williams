@@ -17,14 +17,26 @@ localPort = 18686
 [services.development]
 run = "pnpm --filter @workspace/cwsite run dev"
 
-[services.production]
-build = [ "pnpm", "--filter", "@workspace/cwsite", "run", "build" ]
-publicDir = "artifacts/cwsite/dist/public"
-serve = "static"
+# Production serves the SPA through the API server bundle so social
+# link-preview crawlers get per-route Open Graph/Twitter meta (see
+# artifacts/api-server/src/client-serving.ts). This is the single dynamic
+# production origin: it serves /api, the built static assets, and the
+# meta-injected HTML. The build produces both the SPA and the server bundle.
+[services.production.build]
+args = ["sh", "-c", "pnpm --filter @workspace/cwsite run build && pnpm --filter @workspace/api-server run build"]
 
-[[services.production.rewrites]]
-from = "/*"
-to = "/index.html"
+[services.production.build.env]
+NODE_ENV = "production"
+
+[services.production.run]
+args = ["node", "--enable-source-maps", "artifacts/api-server/dist/index.mjs"]
+
+[services.production.run.env]
+NODE_ENV = "production"
+PORT = "18686"
+
+[services.production.health.startup]
+path = "/api/healthz"
 
 [services.env]
 PORT = "18686"

@@ -37,8 +37,9 @@ export function setupClientServing(app: Express): void {
 
   app.use(async (req, res, next) => {
     if (req.method !== "GET" && req.method !== "HEAD") return next();
-    // Unmatched /api/* requests: let the API router's 404 stand.
-    if (req.path.startsWith("/api/")) return next();
+    // Unmatched /api or /api/* requests: let the API router's 404 stand
+    // rather than handing back SPA HTML for a missed API endpoint.
+    if (req.path === "/api" || req.path.startsWith("/api/")) return next();
     // A file-looking path that static didn't serve is a genuine miss —
     // 404 rather than handing back SPA HTML with a 200.
     if (path.extname(req.path)) {
