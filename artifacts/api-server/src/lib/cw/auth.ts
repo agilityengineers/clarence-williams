@@ -1,4 +1,4 @@
-import { randomBytes } from "node:crypto";
+import { randomBytes, createHash } from "node:crypto";
 import bcrypt from "bcryptjs";
 import { eq, sql } from "drizzle-orm";
 import { SignJWT, jwtVerify } from "jose";
@@ -59,9 +59,31 @@ export async function verifyCredentials(email: string, password: string): Promis
   return bcrypt.compare(password, user.passwordHash);
 }
 
+/**
+ * Short one-way fingerprint of the stored password hash. Embedded in the
+ * session JWT and re-checked on every request, so rotating ADMIN_PASSWORD (or
+ * ADMIN_EMAIL) via seedAdminFromSecrets invalidates all previously issued
+ * sessions — this is what makes "change the secret + redeploy" a real reset.
+ */
+function sessionFingerprint(passwordHash: string): string {
+  return createHash("sha256").update(passwordHash).digest("hex").slice(0, 16);
+}
+
 export async function createSession(res: Response, email: string): Promise<void> {
+  const normalizedEmail = email.trim().toLowerCase();
+  const db = await getDb();
+  const rows = await db
+    .select()
+    .from(schema.adminUsers)
+    .where(eq(schema.adminUsers.email, normalizedEmail));
+  const user = rows[0];
+  if (!user) throw new Error("Cannot create a session for an unknown admin.");
   const secret = await getAuthSecret();
-  const token = await new SignJWT({ sub: email, role: "admin" })
+  const token = await new SignJWT({
+    sub: normalizedEmail,
+    role: "admin",
+    pv: sessionFingerprint(user.passwordHash),
+  })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime(`${SESSION_DAYS}d`)
@@ -85,7 +107,22 @@ export async function getSession(req: Request): Promise<{ email: string } | null
   try {
     const secret = await getAuthSecret();
     const { payload } = await jwtVerify(token, secret);
-    if (payload.role !== "admin" || typeof payload.sub !== "string") return null;
+    if (
+      payload.role !== "admin" ||
+      typeof payload.sub !== "string" ||
+      typeof payload.pv !== "string"
+    ) {
+      return null;
+    }
+    // Revoke the session if the admin no longer exists or the credentials were
+    // rotated (password/email changed), which changes the hash fingerprint.
+    const db = await getDb();
+    const rows = await db
+      .select()
+      .from(schema.adminUsers)
+      .where(eq(schema.adminUsers.email, payload.sub));
+    const user = rows[0];
+    if (!user || sessionFingerprint(user.passwordHash) !== payload.pv) return null;
     return { email: payload.sub };
   } catch {
     return null;
