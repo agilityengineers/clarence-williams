@@ -1,7 +1,8 @@
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "path";
+import fs from "fs";
 import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 
 const rawPort = process.env.PORT;
@@ -26,12 +27,48 @@ if (!basePath) {
   );
 }
 
+/**
+ * Absolute site origin for SEO artifacts baked into the static build
+ * (robots.txt Sitemap directive, Open Graph URLs). SITE_URL wins; a fresh
+ * Replit deploy falls back to its *.replit.app domain. Returns null when
+ * neither is available (e.g. local dev build), in which case the
+ * URL-dependent artifacts are skipped.
+ */
+function getSiteOrigin(): string | null {
+  if (process.env.SITE_URL) return process.env.SITE_URL.replace(/\/$/, "");
+  const replit = process.env.REPLIT_DOMAINS?.split(",")[0]?.trim();
+  if (replit) return `https://${replit}`;
+  return null;
+}
+
+/**
+ * Writes robots.txt into the build output with an absolute Sitemap URL.
+ * The sitemap is served by the API at /api/sitemap.xml (the proxy only
+ * routes /api/* to Express); declaring it in robots.txt makes that
+ * location valid for Google/Bing. Without a known origin, the static
+ * public/robots.txt copy (no Sitemap line) is left as-is.
+ */
+function robotsTxtPlugin(): Plugin {
+  return {
+    name: "generate-robots-txt",
+    apply: "build",
+    closeBundle() {
+      const origin = getSiteOrigin();
+      if (!origin) return;
+      const outDir = path.resolve(import.meta.dirname, "dist/public");
+      const robots = `User-agent: *\nAllow: /\n\nSitemap: ${origin}/api/sitemap.xml\n`;
+      fs.writeFileSync(path.join(outDir, "robots.txt"), robots);
+    },
+  };
+}
+
 export default defineConfig({
   base: basePath,
   plugins: [
     react(),
     tailwindcss(),
     runtimeErrorOverlay(),
+    robotsTxtPlugin(),
     ...(process.env.NODE_ENV !== "production" &&
     process.env.REPL_ID !== undefined
       ? [

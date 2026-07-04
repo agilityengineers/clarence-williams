@@ -3,7 +3,8 @@ import { rateLimit } from "express-rate-limit";
 import { desc, eq } from "drizzle-orm";
 import { getDb, schema } from "../lib/cw/db";
 import { ensureBootstrapped } from "../lib/cw/bootstrap";
-import { getNavPages, getPublishedPage, getSectionContentMap } from "../lib/cw/pages";
+import { getNavPages, getPublishedPage, getSectionContentMap, getSitemapPages } from "../lib/cw/pages";
+import { getBaseUrl } from "../lib/cw/base-url";
 import { getSiteSettings } from "../lib/cw/settings";
 import { getAssessmentBySlug, scoreAssessment } from "../lib/cw/assessments";
 import { getFeedItems } from "../lib/cw/rss";
@@ -191,6 +192,54 @@ router.post("/public/assessments/submit", leadLimiter, async (req, res): Promise
   });
 
   res.json({ ok: true, score: scored.score, tier: scored.tier });
+});
+
+/**
+ * Sitemap for search engines. The proxy only routes /api/* to this server,
+ * so the sitemap lives at /api/sitemap.xml rather than the site root. That
+ * is a valid location: the sitemaps.org path-scoping rule is waived for
+ * sitemaps declared via a same-host robots.txt `Sitemap:` directive, which
+ * the built robots.txt provides. Do not "fix" this by moving it.
+ */
+router.get("/sitemap.xml", async (_req, res): Promise<void> => {
+  await ensureBootstrapped();
+  const base = getBaseUrl();
+  const pages = await getSitemapPages();
+  const db = await getDb();
+  const activeAssessments = await db
+    .select({ slug: schema.assessments.slug, updatedAt: schema.assessments.updatedAt })
+    .from(schema.assessments)
+    .where(eq(schema.assessments.active, true));
+
+  const urls = [
+    // "home" is served at "/" (a literal /home 404s in the SPA).
+    ...pages.map((p) => ({
+      loc: p.slug === "home" ? `${base}/` : `${base}/${p.slug}`,
+      lastmod: p.updatedAt,
+    })),
+    ...activeAssessments.map((a) => ({
+      loc: `${base}/assessment/${a.slug}`,
+      lastmod: a.updatedAt,
+    })),
+  ];
+  const esc = (s: string) =>
+    s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const xml =
+    `<?xml version="1.0" encoding="UTF-8"?>\n` +
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
+    urls
+      .map(
+        (u) =>
+          `  <url><loc>${esc(u.loc)}</loc><lastmod>${u.lastmod.toISOString().slice(0, 10)}</lastmod></url>`,
+      )
+      .join("\n") +
+    `\n</urlset>\n`;
+  res
+    .set({
+      "Content-Type": "application/xml; charset=utf-8",
+      "Cache-Control": "public, max-age=3600",
+    })
+    .send(xml);
 });
 
 /** Books for the author sections (featured hero + archive grid). */
