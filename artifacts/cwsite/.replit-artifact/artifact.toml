@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "Clarence Williams Consulting"
+version = "1.0.0"
+id = "artifacts/cwsite"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 18686
+
+[services.development]
+run = "pnpm --filter @workspace/cwsite run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/cwsite", "run", "build" ]
+publicDir = "artifacts/cwsite/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18686"
+BASE_PATH = "/"

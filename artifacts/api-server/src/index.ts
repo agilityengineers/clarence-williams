@@ -1,5 +1,10 @@
 import app from "./app";
 import { logger } from "./lib/logger";
+import { ensureBootstrapped } from "./lib/cw/bootstrap";
+
+ensureBootstrapped().catch((err) => {
+  logger.error({ err }, "Bootstrap (seed) failed");
+});
 
 const rawPort = process.env["PORT"];
 

@@ -1,0 +1,1 @@
+- [Drizzle raw SQL inserts](drizzle-raw-sql-inserts.md) — schema `id()` defaults are app-side; raw INSERTs must supply id and cast bare SELECT params.
