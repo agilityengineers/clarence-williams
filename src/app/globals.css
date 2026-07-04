@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+/*
+ * ClarenceWilliams.com design tokens — from the approved design handoff.
+ * Dark surfaces use navy + gold; light surfaces use ivory + bronze.
+ */
+@theme inline {
+  /* Dark (navy) surfaces */
+  --color-navy: #0b1626;
+  --color-navy-panel: #0e1b2e;
+  --color-navy-panel-hover: #13233b;
+  --color-navy-halo: #152238;
+  --color-navy-rule: #2a3b52;
+  --color-dark-muted: #a9b4c6;
+  --color-dark-faint: #7c8aa0;
+  --color-dark-ivory: #ede6d6;
+
+  /* Light (ivory) surfaces */
+  --color-ivory: #f7f4ee;
+  --color-ivory-hover: #f1ece1;
+  --color-rule-light: #d8d3c8;
+  --color-chip-border: #c9b694;
+  --color-ink: #10233a;
+  --color-ink-body: #322e29;
+  --color-ink-secondary: #55514a;
+  --color-ink-muted: #6b675f;
+  --color-ink-faint: #9a958a;
+
+  /* Accents */
+  --color-gold: #c9a24b;
+  --color-bronze: #b0793f;
+  --color-on-gold: #0b1626;
+  --color-form-error: #d08770;
+
+  /* Type */
+  --font-display: var(--font-cormorant);
+  --font-sans: var(--font-archivo);
+}
+
+body {
+  background: var(--color-navy);
+  color: var(--color-dark-ivory);
+  font-family: var(--font-sans);
+}
+
+/* Square corners everywhere except circles, per the design system. */
+button,
+input,
+textarea,
+select {
+  border-radius: 0;
+}
+
+/* 36px × 2px accent dash that precedes every eyebrow. */
+.eyebrow-dash::before {
+  content: "";
+  display: inline-block;
+  width: 36px;
+  height: 2px;
+  background: currentColor;
+  vertical-align: middle;
+  margin-right: 16px;
+  transform: translateY(-1px);
+}
