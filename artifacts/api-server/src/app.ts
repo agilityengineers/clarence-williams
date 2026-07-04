@@ -3,6 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import pinoHttp from "pino-http";
 import router from "./routes";
+import { setupClientServing } from "./client-serving";
 import { logger } from "./lib/logger";
 
 const app: Express = express();
@@ -54,5 +55,9 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", router);
+
+// Serve the built public SPA with per-route social meta injection (no-op
+// when the client build isn't present, e.g. API-only runs and local dev).
+setupClientServing(app);
 
 export default app;
