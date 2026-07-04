@@ -31,38 +31,31 @@ async function bootstrap() {
 }
 
 /**
- * Ensures the single admin account matches the ADMIN_EMAIL / ADMIN_PASSWORD
- * secrets. Runs every boot, so changing ADMIN_PASSWORD and redeploying resets
- * the login password — this is the account-recovery path. When the secrets are
- * absent, any existing admin row is left untouched (nothing is deleted).
- * Any admin whose email does not match ADMIN_EMAIL is removed to preserve the
- * single-admin model.
+ * Provisions the single admin account from the ADMIN_EMAIL / ADMIN_PASSWORD
+ * secrets — but ONLY when no admin exists yet (first boot on a fresh database).
+ *
+ * Precedence (deliberate — see issue #10): the secrets are the *initial*
+ * provisioning method, not an every-boot override. Once an admin row exists,
+ * its password hash is owned by the application, so a password set through the
+ * self-service reset flow survives restarts and redeploys. If this seeded from
+ * secrets on every boot, the next deploy would re-hash ADMIN_PASSWORD and
+ * silently undo a reset.
+ *
+ * Consequences of this precedence:
+ *  - Changing ADMIN_PASSWORD / ADMIN_EMAIL in the secrets and redeploying no
+ *    longer changes the login once an admin exists. The recovery path is now
+ *    the "Forgot password?" flow (email-based, single-use, expiring link).
+ *  - The only way to re-seed from secrets is to start from an empty
+ *    admin_users table (fresh database, or the row removed manually) — used as
+ *    a last-resort break-glass if the email transport is unavailable.
  */
 async function seedAdminFromSecrets(db: Awaited<ReturnType<typeof getDb>>) {
   const email = process.env.ADMIN_EMAIL?.trim().toLowerCase();
   const password = process.env.ADMIN_PASSWORD;
   if (!email || !password) return;
 
-  const rows = await db.select().from(schema.adminUsers);
-  for (const row of rows) {
-    if (row.email !== email) {
-      await db.delete(schema.adminUsers).where(eq(schema.adminUsers.id, row.id));
-    }
-  }
-
-  const existing = rows.find((r) => r.email === email);
-  if (existing) {
-    // Only re-hash when the password actually changed, so existing sessions
-    // (and the stored hash) stay stable across restarts.
-    if (await bcrypt.compare(password, existing.passwordHash)) return;
-    const passwordHash = await bcrypt.hash(password, 12);
-    await db
-      .update(schema.adminUsers)
-      .set({ passwordHash })
-      .where(eq(schema.adminUsers.id, existing.id));
-    logger.info("Admin password synced from ADMIN_PASSWORD secret");
-    return;
-  }
+  const existing = await db.select({ id: schema.adminUsers.id }).from(schema.adminUsers).limit(1);
+  if (existing.length > 0) return;
 
   const passwordHash = await bcrypt.hash(password, 12);
   await db.insert(schema.adminUsers).values({ email, passwordHash });
