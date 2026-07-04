@@ -1,0 +1,40 @@
+# Clarence Williams
+
+> Business & management consulting site for Clarence Williams — a Vistage
+> Chair based in Alpharetta, GA. Covers business consulting, software
+> delivery leadership, and brand & marketing guidance for founders and
+> executive teams. The site also hosts two free self-assessment tools and
+> a resume-request flow for executive search inquiries.
+
+Primary audience: founders, executives, and business owners evaluating
+consulting engagements, Vistage peer-group membership, or executive
+coaching, plus recruiters and hiring teams requesting Clarence's resume.
+
+## Primary pages
+
+- [Home](/): overview of Clarence Williams' consulting practice, service
+  pillars, proof points, and how to book an introductory call.
+- [Services](/services): the three consulting pillars — business
+  consulting, software delivery leadership, and brand & marketing.
+- [About](/about): background, credentials, and bio.
+- [Author](/author): Clarence Williams' published book(s) and author bio.
+- [Resume](/resume): recruiter-facing page for requesting Clarence's
+  resume for executive search consideration.
+
+## Assessments
+
+- [Agility Assessment](/assessment/agility): a free self-assessment that
+  scores an organization's operational agility and returns a tiered
+  recommendation.
+- [Business Health Assessment](/assessment/business-health): a free
+  self-assessment that scores overall business health and returns a
+  tiered recommendation.
+
+## Other resources
+
+- [Sitemap](/api/sitemap.xml): the full list of published pages and
+  active assessments, with last-modified dates.
+
+Note: additional marketing pages may be published or unpublished by the
+site owner over time — see the sitemap above for the current canonical
+list of crawlable public routes.

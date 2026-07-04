@@ -17,12 +17,26 @@
 import { getBaseUrl } from "./base-url";
 import { getPublishedPage } from "./pages";
 import { getAssessmentBySlug } from "./assessments";
+import { getPublicLayout } from "./layout";
+import { renderAssessmentBodyHtml, renderPageBodyHtml } from "./render-body";
 
 export type HeadMeta = {
   title: string;
   description?: string;
   ogImage?: string;
   ogUrl: string;
+  /** Server-rendered body markup for the route, for non-JS crawlers. */
+  bodyHtml?: string;
+  /** Page-level structured data (application/ld+json), if the page has any. */
+  jsonLd?: unknown;
+};
+
+// The two assessment instruments cross-link to each other in the UI. There
+// is no public endpoint listing assessments, so mirror the known pairing
+// used client-side (see AssessmentPage.tsx) for the server-rendered link.
+const ASSESSMENT_CROSS_LINK: Record<string, string> = {
+  agility: "business-health",
+  "business-health": "agility",
 };
 
 /**
@@ -52,24 +66,32 @@ export async function resolveHeadMeta(pathname: string): Promise<HeadMeta | null
 }
 
 async function pageMeta(slug: string, base: string, path: string): Promise<HeadMeta | null> {
-  const page = await getPublishedPage(slug);
+  const [page, layout] = await Promise.all([getPublishedPage(slug), getPublicLayout()]);
   if (!page) return null;
   return {
     title: page.metaTitle || page.title,
     description: page.metaDescription || undefined,
     ogImage: page.ogImageId ? `${base}/api/media/${page.ogImageId}` : undefined,
     ogUrl: `${base}${path === "/" ? "/" : path}`,
+    bodyHtml: renderPageBodyHtml(page, layout),
+    jsonLd: page.jsonLd ?? undefined,
   };
 }
 
 async function assessmentMeta(slug: string, base: string, path: string): Promise<HeadMeta | null> {
-  const assessment = await getAssessmentBySlug(slug);
+  const [assessment, layout] = await Promise.all([getAssessmentBySlug(slug), getPublicLayout()]);
   // Mirror the public route, which 404s inactive assessments.
   if (!assessment || !assessment.active) return null;
+  const otherSlug = ASSESSMENT_CROSS_LINK[slug];
   return {
     title: `${assessment.title} — Clarence Williams`,
     description: assessment.intro.description || undefined,
     ogUrl: `${base}${path}`,
+    bodyHtml: renderAssessmentBodyHtml(
+      assessment,
+      layout,
+      otherSlug ? `/assessment/${otherSlug}` : null,
+    ),
   };
 }
 
@@ -131,4 +153,28 @@ export function injectHeadMeta(html: string, meta: HeadMeta): string {
     out = setMeta(out, "name", "twitter:image", meta.ogImage);
   }
   return out;
+}
+
+/**
+ * Inject server-rendered body markup into the empty `<div id="root"></div>`
+ * shell so non-JS crawlers see real page content in the initial response.
+ * The client mounts with `createRoot(...)` (not `hydrateRoot`), so this
+ * markup is simply replaced once the app's JS runs — no hydration mismatch.
+ */
+export function injectBodyHtml(html: string, bodyHtml: string): string {
+  const re = /<div id="root">[\s\S]*?<\/div>/;
+  return re.test(html)
+    ? html.replace(re, `<div id="root">${bodyHtml}</div>`)
+    : html;
+}
+
+/**
+ * Insert a page's structured data as a `<script type="application/ld+json">`
+ * before `</body>`, escaping `</` so the payload can't prematurely close the
+ * script element.
+ */
+export function injectJsonLd(html: string, jsonLd: unknown): string {
+  const json = JSON.stringify(jsonLd).replace(/<\//g, "<\\/");
+  const tag = `<script type="application/ld+json">${json}</script>`;
+  return html.includes("</body>") ? html.replace("</body>", `${tag}\n  </body>`) : html;
 }

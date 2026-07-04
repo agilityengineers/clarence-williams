@@ -3,13 +3,13 @@ import { rateLimit } from "express-rate-limit";
 import { desc, eq } from "drizzle-orm";
 import { getDb, schema } from "../lib/cw/db";
 import { ensureBootstrapped } from "../lib/cw/bootstrap";
-import { getNavPages, getPublishedPage, getSectionContentMap, getSitemapPages } from "../lib/cw/pages";
+import { getPublishedPage, getSectionContentMap, getSitemapPages } from "../lib/cw/pages";
 import { getBaseUrl } from "../lib/cw/base-url";
 import { getSiteSettings } from "../lib/cw/settings";
+import { getPublicLayout } from "../lib/cw/layout";
 import { getAssessmentBySlug, scoreAssessment } from "../lib/cw/assessments";
 import { getFeedItems } from "../lib/cw/rss";
 import { notifyLead } from "../lib/cw/notifications";
-import { sectionSchemas } from "../lib/cw/sections/schemas";
 
 const router: IRouter = Router();
 
@@ -43,13 +43,7 @@ function isHoneypotTripped(body: unknown): boolean {
 /** Everything the shell (nav + footer) needs in one call. */
 router.get("/public/layout", async (_req, res): Promise<void> => {
   await ensureBootstrapped();
-  const [navPages, settings, sectionContent] = await Promise.all([
-    getNavPages(),
-    getSiteSettings(),
-    getSectionContentMap(),
-  ]);
-  const footerRaw = sectionContent["footer"];
-  const footerParsed = footerRaw ? sectionSchemas.footer.safeParse(footerRaw) : null;
+  const { navPages, settings, footer } = await getPublicLayout();
   res.json({
     navPages,
     settings: {
@@ -58,7 +52,7 @@ router.get("/public/layout", async (_req, res): Promise<void> => {
       metaDefaults: settings.metaDefaults,
       insightsDefaults: settings.insightsDefaults,
     },
-    footer: footerParsed?.success ? footerParsed.data : null,
+    footer,
   });
 });
 

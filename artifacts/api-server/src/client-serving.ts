@@ -2,7 +2,7 @@ import express, { type Express } from "express";
 import fs from "node:fs";
 import path from "node:path";
 import { logger } from "./lib/logger";
-import { injectHeadMeta, resolveHeadMeta } from "./lib/cw/head-meta";
+import { injectBodyHtml, injectHeadMeta, injectJsonLd, resolveHeadMeta } from "./lib/cw/head-meta";
 
 /**
  * Serves the built public SPA and rewrites index.html's head per route so
@@ -50,7 +50,11 @@ export function setupClientServing(app: Express): void {
     let html = baseHtml;
     try {
       const meta = await resolveHeadMeta(req.path);
-      if (meta) html = injectHeadMeta(baseHtml, meta);
+      if (meta) {
+        html = injectHeadMeta(baseHtml, meta);
+        if (meta.bodyHtml) html = injectBodyHtml(html, meta.bodyHtml);
+        if (meta.jsonLd) html = injectJsonLd(html, meta.jsonLd);
+      }
     } catch (err) {
       logger.warn({ err, path: req.path }, "Head meta injection failed; serving default HTML");
     }
