@@ -92,7 +92,7 @@ export default function AssessmentFlow({
   };
 
   return (
-    <section className="flex flex-1 items-center justify-center bg-navy px-6 py-20 font-sans text-dark-ivory lg:px-[100px]">
+    <section className="flex flex-1 items-center justify-center bg-navy px-5 py-14 font-sans text-dark-ivory sm:px-6 md:py-20 lg:px-[100px]">
       {screen === "intro" && (
         <div className="flex max-w-[1000px] flex-col items-center text-center">
           <div className="flex items-center gap-4">
@@ -103,15 +103,15 @@ export default function AssessmentFlow({
             <span className="h-[2px] w-9 bg-gold" />
           </div>
           <h1
-            className="mt-8 font-display text-[44px] font-medium leading-[1.08] md:text-[80px]"
+            className="mt-8 font-display text-[36px] font-medium leading-[1.1] sm:text-[44px] md:text-[80px] md:leading-[1.08]"
             style={{ textWrap: "balance" }}
           >
             {assessment.intro.headline}
           </h1>
-          <p className="mt-[30px] max-w-[780px] text-[21px] leading-[1.7] text-dark-muted" style={{ textWrap: "pretty" }}>
+          <p className="mt-6 max-w-[780px] text-[18px] leading-[1.7] text-dark-muted md:mt-[30px] md:text-[21px]" style={{ textWrap: "pretty" }}>
             {assessment.intro.description}
           </p>
-          <div className="mt-12 flex flex-wrap justify-center gap-8 text-[14px] tracking-[0.14em] text-dark-muted md:gap-14">
+          <div className="mt-10 flex flex-wrap justify-center gap-x-8 gap-y-3 text-[14px] tracking-[0.14em] text-dark-muted md:mt-12 md:gap-14">
             {assessment.intro.metaLines.map((line) => (
               <MetaLine key={line} line={line} />
             ))}
@@ -123,7 +123,7 @@ export default function AssessmentFlow({
               setIdx(0);
               setPicks([]);
             }}
-            className="mt-[52px] bg-gold px-12 py-[22px] text-[15px] font-semibold tracking-[0.14em] text-on-gold transition-opacity hover:opacity-90"
+            className="mt-10 bg-gold px-12 py-[22px] text-[15px] font-semibold tracking-[0.14em] text-on-gold transition-opacity hover:opacity-90 max-sm:w-full md:mt-[52px]"
           >
             BEGIN THE ASSESSMENT
           </button>
@@ -156,30 +156,30 @@ export default function AssessmentFlow({
             />
           </div>
           <h2
-            className="mt-10 font-display text-[32px] font-medium leading-[1.2] md:mt-16 md:text-[52px]"
+            className="mt-8 font-display text-[28px] font-medium leading-[1.2] sm:text-[32px] md:mt-16 md:text-[52px]"
             style={{ textWrap: "balance" }}
           >
             {q.text}
           </h2>
-          <div className="mt-8 flex flex-col gap-4 md:mt-12">
+          <div className="mt-7 flex flex-col gap-3.5 md:mt-12 md:gap-4">
             {q.options.map((opt, i) => (
               <button
                 key={opt.id}
                 type="button"
                 onClick={() => pick(opt.id)}
-                className="flex items-center gap-6 border border-navy-rule bg-navy-panel px-8 py-[26px] text-left transition-colors hover:border-gold hover:bg-navy-panel-hover"
+                className="flex items-center gap-4 border border-navy-rule bg-navy-panel px-5 py-5 text-left transition-colors hover:border-gold hover:bg-navy-panel-hover md:gap-6 md:px-8 md:py-[26px]"
               >
                 <span className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full border border-gold text-[14px] font-semibold text-gold">
                   {OPTION_KEYS[i]}
                 </span>
-                <span className="text-[17px] leading-[1.5] md:text-[19px]">{opt.label}</span>
+                <span className="text-[16px] leading-[1.5] md:text-[19px]">{opt.label}</span>
               </button>
             ))}
           </div>
           <button
             type="button"
             onClick={() => (idx === 0 ? setScreen("intro") : setIdx(idx - 1))}
-            className="mt-10 self-start text-[13px] tracking-[0.18em] text-dark-faint transition-colors hover:text-dark-ivory"
+            className="mt-7 self-start py-3 text-[13px] tracking-[0.18em] text-dark-faint transition-colors hover:text-dark-ivory md:mt-10"
           >
             ← BACK
           </button>
@@ -187,9 +187,9 @@ export default function AssessmentFlow({
       )}
 
       {screen === "capture" && (
-        <div className="flex w-full max-w-[680px] flex-col border border-navy-rule bg-navy-panel p-8 md:p-14">
+        <div className="flex w-full max-w-[680px] flex-col border border-navy-rule bg-navy-panel p-6 sm:p-8 md:p-14">
           <span className="text-[13px] tracking-[0.2em] text-dark-muted">{assessment.intro.eyebrow}</span>
-          <h2 className="mt-5 font-display text-[40px] font-medium leading-[1.15]">
+          <h2 className="mt-5 font-display text-[32px] font-medium leading-[1.15] md:text-[40px]">
             {assessment.resultsCopy.leadCapture.title}
           </h2>
           <p className="mt-4 text-[16px] leading-[1.7] text-dark-muted" style={{ textWrap: "pretty" }}>
@@ -227,7 +227,7 @@ export default function AssessmentFlow({
                 setScreen("question");
                 setIdx(total - 1);
               }}
-              className="self-start text-[13px] tracking-[0.18em] text-dark-faint transition-colors hover:text-dark-ivory"
+              className="self-start py-3 text-[13px] tracking-[0.18em] text-dark-faint transition-colors hover:text-dark-ivory"
             >
               ← BACK TO QUESTIONS
             </button>
@@ -240,26 +240,26 @@ export default function AssessmentFlow({
           <span className="text-[14px] font-semibold tracking-[0.32em] text-dark-muted">
             {assessment.resultsCopy.headline}
           </span>
-          <div className="relative mt-11 flex h-[300px] w-[300px] flex-col items-center justify-center rounded-full border border-navy-rule">
+          <div className="relative mt-9 flex h-[230px] w-[230px] flex-col items-center justify-center rounded-full border border-navy-rule md:mt-11 md:h-[300px] md:w-[300px]">
             <div aria-hidden className="absolute inset-[14px] rounded-full border-2 border-gold" />
-            <span className="font-display text-[110px] leading-none text-gold">{result.score}</span>
+            <span className="font-display text-[80px] leading-none text-gold md:text-[110px]">{result.score}</span>
             <span className="mt-2 text-[13px] tracking-[0.24em] text-dark-muted">OUT OF 100</span>
           </div>
           <h2
-            className="mt-11 font-display text-[38px] font-medium leading-[1.15] md:text-[62px]"
+            className="mt-9 font-display text-[32px] font-medium leading-[1.15] sm:text-[38px] md:mt-11 md:text-[62px]"
             style={{ textWrap: "balance" }}
           >
             {result.tier.headline}
           </h2>
-          <p className="mt-6 max-w-[760px] text-[20px] leading-[1.7] text-dark-muted" style={{ textWrap: "pretty" }}>
+          <p className="mt-5 max-w-[760px] text-[18px] leading-[1.7] text-dark-muted md:mt-6 md:text-[20px]" style={{ textWrap: "pretty" }}>
             {result.tier.recommendation}
           </p>
-          <div className="mt-12 flex flex-wrap justify-center gap-6">
+          <div className="mt-10 flex w-full flex-wrap justify-center gap-4 md:mt-12 md:w-auto md:gap-6">
             <a
               href={calendlyUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-gold px-11 py-[22px] text-[15px] font-semibold tracking-[0.14em] text-on-gold transition-opacity hover:opacity-90"
+              className="bg-gold px-11 py-[22px] text-center text-[15px] font-semibold tracking-[0.14em] text-on-gold transition-opacity hover:opacity-90 max-sm:w-full"
             >
               BOOK A CALL WITH CLARENCE
             </a>
@@ -271,7 +271,7 @@ export default function AssessmentFlow({
                 setPicks([]);
                 setResult(null);
               }}
-              className="border border-dark-muted px-11 py-[22px] text-[15px] font-semibold tracking-[0.14em] text-dark-ivory transition-colors hover:border-gold"
+              className="border border-dark-muted px-11 py-[22px] text-center text-[15px] font-semibold tracking-[0.14em] text-dark-ivory transition-colors hover:border-gold max-sm:w-full"
             >
               RETAKE ASSESSMENT
             </button>

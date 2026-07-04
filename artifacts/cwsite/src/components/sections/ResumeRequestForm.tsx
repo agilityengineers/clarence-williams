@@ -58,9 +58,9 @@ export default function ResumeRequestForm({
   }
 
   return (
-    <div className="flex flex-col border border-navy-rule bg-navy-panel p-8 md:p-14 md:pb-[52px]">
-      <span className="font-display text-[36px] font-medium">{formTitle}</span>
-      <form onSubmit={onSubmit} className="mt-10 flex flex-col gap-[26px]">
+    <div className="flex flex-col border border-navy-rule bg-navy-panel p-6 sm:p-8 md:p-14 md:pb-[52px]">
+      <span className="font-display text-[30px] font-medium md:text-[36px]">{formTitle}</span>
+      <form onSubmit={onSubmit} className="mt-8 flex flex-col gap-[22px] md:mt-10 md:gap-[26px]">
         <div aria-hidden="true" className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden">
           <label>
             Website

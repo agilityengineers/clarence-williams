@@ -19,12 +19,12 @@ export default function BookCallSection({ content }: { content: BookCallContent 
 
   return (
     <section id="book" className="bg-navy font-sans text-dark-ivory">
-      <div className="mx-auto flex max-w-[1920px] flex-col items-center px-6 pt-[120px] text-center lg:px-[100px]">
+      <div className="mx-auto flex max-w-[1920px] flex-col items-center px-6 pt-20 text-center md:pt-[120px] lg:px-[100px]">
         <Eyebrow tone="dark" centered>
           {content.eyebrow}
         </Eyebrow>
         <h2
-          className="mt-[30px] max-w-[1200px] font-display text-[44px] font-medium leading-[1.1] md:text-[76px]"
+          className="mt-[30px] max-w-[1200px] font-display text-[38px] font-medium leading-[1.1] sm:text-[44px] md:text-[76px]"
           style={{ textWrap: "balance" }}
         >
           {split ? (
@@ -35,21 +35,21 @@ export default function BookCallSection({ content }: { content: BookCallContent 
             headline
           )}
         </h2>
-        <p className="mt-7 max-w-[800px] text-[20px] leading-[1.7] text-dark-muted" style={{ textWrap: "pretty" }}>
+        <p className="mt-6 max-w-[800px] text-[18px] leading-[1.7] text-dark-muted md:mt-7 md:text-[20px]" style={{ textWrap: "pretty" }}>
           {content.note}
         </p>
-        <div className="mt-12 flex flex-wrap justify-center gap-6">
+        <div className="mt-10 flex w-full flex-wrap justify-center gap-4 md:mt-12 md:w-auto md:gap-6">
           <a
             href={calendlyUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-gold px-11 py-[22px] text-[15px] font-semibold tracking-[0.14em] text-on-gold transition-opacity hover:opacity-90"
+            className="bg-gold px-11 py-[22px] text-center text-[15px] font-semibold tracking-[0.14em] text-on-gold transition-opacity hover:opacity-90 max-sm:w-full"
           >
             {content.primaryCta.label}
           </a>
           <Link
             href={content.secondaryCta.href}
-            className="border border-dark-muted px-11 py-[22px] text-[15px] font-semibold tracking-[0.14em] text-dark-ivory transition-colors hover:border-gold"
+            className="border border-dark-muted px-11 py-[22px] text-center text-[15px] font-semibold tracking-[0.14em] text-dark-ivory transition-colors hover:border-gold max-sm:w-full"
           >
             {content.secondaryCta.label}
           </Link>

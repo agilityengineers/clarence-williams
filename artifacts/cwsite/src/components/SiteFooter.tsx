@@ -23,8 +23,10 @@ export default function SiteFooter({ variant = "full" }: { variant?: "full" | "s
             <img src={assetUrl("/assets/logo-gold.png")} alt="CW monogram" width={24} height={24} className="h-6 w-6 object-contain" />
             <span>© {year} CLARENCEWILLIAMS.COM</span>
           </div>
-          <span className="uppercase">
-            {contact.email} · {contact.phone}
+          <span className="flex flex-col items-center gap-1 text-center uppercase md:flex-row md:gap-2">
+            <span className="break-all">{contact.email}</span>
+            <span className="max-md:hidden">·</span>
+            <span>{contact.phone}</span>
           </span>
         </div>
       </footer>
@@ -34,17 +36,17 @@ export default function SiteFooter({ variant = "full" }: { variant?: "full" | "s
   return (
     <footer className="bg-navy px-6 font-sans text-dark-muted lg:px-[100px]">
       <div className="mx-auto max-w-[1720px]">
-        <div className="grid gap-12 border-t border-navy-rule py-14 pb-12 lg:grid-cols-[1.4fr_1fr_1fr] lg:gap-20">
+        <div className="grid gap-10 border-t border-navy-rule py-12 md:gap-12 md:py-14 md:pb-12 lg:grid-cols-[1.4fr_1fr_1fr] lg:gap-20">
           <div className="flex flex-col gap-[18px]">
-            <div className="flex items-center gap-5">
+            <div className="flex items-center gap-4 sm:gap-5">
               <img
                 src={assetUrl("/assets/logo-gold.png")}
                 alt="Clarence Williams monogram"
                 width={34}
                 height={34}
-                className="h-[34px] w-[34px] object-contain"
+                className="h-7 w-7 shrink-0 object-contain sm:h-[34px] sm:w-[34px]"
               />
-              <span className="whitespace-nowrap font-display text-[34px] font-medium leading-none text-dark-ivory">
+              <span className="whitespace-nowrap font-display text-[26px] font-medium leading-none text-dark-ivory sm:text-[34px]">
                 Clarence <span className="italic text-gold">Williams</span>
               </span>
             </div>
@@ -89,7 +91,7 @@ export default function SiteFooter({ variant = "full" }: { variant?: "full" | "s
 
         <div className="flex flex-col justify-between gap-3 border-t border-navy-rule pb-7 pt-6 text-[12px] tracking-[0.08em] text-dark-faint md:flex-row">
           <span>© {year} CLARENCEWILLIAMS.COM — ALL RIGHTS RESERVED</span>
-          <div className="flex gap-8">
+          <div className="flex flex-wrap gap-x-8 gap-y-2">
             {footer.legalLinks.map((l) => (
               <Link key={l.label} href={l.href} className="transition-colors hover:text-dark-ivory">
                 {l.label}

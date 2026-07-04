@@ -80,7 +80,7 @@ export default function HeroSection({ content }: { content: HeroContent }) {
         </svg>
 
         {/* Hero-internal top bar */}
-        <div className="flex items-center justify-between px-6 py-10 lg:px-[100px] xl:absolute xl:inset-x-0 xl:top-0 xl:z-[3]">
+        <div className="flex items-center justify-between px-6 py-6 md:py-10 lg:px-[100px] xl:absolute xl:inset-x-0 xl:top-0 xl:z-[3]">
           <div className="font-display text-[28px] tracking-[0.08em]">
             C<span style={{ color: t.accent }}>·</span>W
           </div>
@@ -98,38 +98,38 @@ export default function HeroSection({ content }: { content: HeroContent }) {
         </div>
 
         {/* Left content */}
-        <div className="relative z-[3] flex flex-col items-start px-6 pb-16 lg:px-[100px] xl:absolute xl:left-[100px] xl:top-[200px] xl:w-[880px] xl:p-0">
+        <div className="relative z-[3] flex flex-col items-start px-6 pb-12 md:pb-16 lg:px-[100px] xl:absolute xl:left-[100px] xl:top-[200px] xl:w-[880px] xl:p-0">
           <div className="flex items-center gap-4">
             <div className="h-[2px] w-9" style={{ background: t.accent }} />
             <span className="text-[14px] font-semibold tracking-[0.32em]" style={{ color: t.sub }}>
               {content.eyebrow}
             </span>
           </div>
-          <h1 className="mt-[30px] font-display text-[52px] font-medium leading-none md:text-[72px] xl:whitespace-nowrap xl:text-[96px]">
+          <h1 className="mt-6 font-display text-[48px] font-medium leading-none sm:text-[52px] md:mt-[30px] md:text-[72px] xl:whitespace-nowrap xl:text-[96px]">
             {content.firstName}{" "}
             <span className="italic" style={{ color: t.accent }}>
               {content.lastName}
             </span>
           </h1>
           <p
-            className="mt-[34px] max-w-[640px] text-[19px] leading-[1.6] md:text-[23px]"
+            className="mt-6 max-w-[640px] text-[19px] leading-[1.6] md:mt-[34px] md:text-[23px]"
             style={{ color: t.sub, textWrap: "pretty" }}
           >
             {content.tagline}
           </p>
-          <div className="mt-11 flex flex-wrap gap-5">
+          <div className="mt-9 flex w-full flex-wrap gap-4 md:mt-11 md:w-auto md:gap-5">
             <a
               href={calendlyUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-9 py-5 text-[15px] font-semibold tracking-[0.14em] transition-opacity hover:opacity-90"
+              className="px-9 py-5 text-center text-[15px] font-semibold tracking-[0.14em] transition-opacity hover:opacity-90 max-sm:w-full"
               style={{ background: t.accent, color: t.onAccent }}
             >
               {content.primaryCta.label}
             </a>
             <Link
               href={content.secondaryCta.href}
-              className="px-9 py-5 text-[15px] font-semibold tracking-[0.14em] transition-opacity hover:opacity-80"
+              className="px-9 py-5 text-center text-[15px] font-semibold tracking-[0.14em] transition-opacity hover:opacity-80 max-sm:w-full"
               style={{ border: `1px solid ${t.sub}`, color: t.ink }}
             >
               {content.secondaryCta.label}
@@ -137,7 +137,7 @@ export default function HeroSection({ content }: { content: HeroContent }) {
           </div>
           {/* Pillars */}
           <div
-            className="mt-[72px] flex flex-col gap-8 pt-[30px] md:flex-row md:gap-12"
+            className="mt-12 flex flex-col gap-8 self-stretch pt-[30px] md:mt-[72px] md:flex-row md:gap-12 md:self-auto"
             style={{ borderTop: `1px solid ${t.rule}` }}
           >
             {content.pillars.map((p, i) => (
@@ -155,7 +155,7 @@ export default function HeroSection({ content }: { content: HeroContent }) {
         </div>
 
         {/* Portrait cutout */}
-        <div className="relative z-[2] mx-auto flex h-[520px] w-full max-w-[420px] items-end justify-center xl:absolute xl:bottom-0 xl:right-[120px] xl:mx-0 xl:h-[940px] xl:w-[720px] xl:max-w-none">
+        <div className="relative z-[2] mx-auto flex h-[420px] w-full max-w-[420px] items-end justify-center px-6 sm:h-[520px] sm:px-0 xl:absolute xl:bottom-0 xl:right-[120px] xl:mx-0 xl:h-[940px] xl:w-[720px] xl:max-w-none">
           <div aria-hidden className="absolute bottom-0 left-1/2 h-[420px] w-[420px] -translate-x-1/2 translate-y-1/3 rounded-full xl:hidden" style={{ background: t.halo }} />
           <img
             src={portraitSrc}

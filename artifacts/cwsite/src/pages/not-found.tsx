@@ -10,7 +10,7 @@ export default function NotFound() {
         <span className="eyebrow-dash font-sans text-[13px] font-semibold uppercase tracking-[0.24em] text-gold">
           404
         </span>
-        <h1 className="font-display text-[44px] font-medium leading-tight text-dark-ivory">
+        <h1 className="font-display text-[36px] font-medium leading-tight text-dark-ivory sm:text-[44px]">
           This page could not be found.
         </h1>
         <Link
