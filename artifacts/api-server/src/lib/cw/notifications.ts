@@ -12,11 +12,21 @@ import { logger } from "../logger";
  * lead data; values are HTML-escaped when injected into the HTML body.
  */
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export const notificationSettingsSchema = z.object({
   /** Recipient. Empty string = fall back to the site contact email. */
-  to: z.string().max(320),
+  to: z
+    .string()
+    .trim()
+    .max(320)
+    .refine((v) => v === "" || EMAIL_RE.test(v), "Enter a valid email address (or leave blank)."),
   /** Sender address — must be a verified sender in SendGrid. */
-  from: z.string().max(320),
+  from: z
+    .string()
+    .trim()
+    .max(320)
+    .refine((v) => EMAIL_RE.test(v), "Enter a valid sender email address."),
   assessment: z.object({
     subject: z.string().min(1).max(500),
     html: z.string().min(1).max(20000),
@@ -144,7 +154,7 @@ export async function notifyLead(kind: LeadKind, data: Record<string, string>): 
     const subject = renderTemplate(template.subject, data, "text");
     const html = renderTemplate(template.html, data, "html");
     const result = await sendEmail({ to, from: settings.from, subject, html, text: htmlToText(html) });
-    if (!result.ok) {
+    if (!result.ok && !result.skipped) {
       logger.error({ kind, error: result.error }, "[notify] lead email not sent");
     }
   } catch (err) {

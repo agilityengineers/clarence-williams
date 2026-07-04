@@ -1,1 +1,2 @@
 - [Drizzle raw SQL inserts](drizzle-raw-sql-inserts.md) — schema `id()` defaults are app-side; raw INSERTs must supply id and cast bare SELECT params.
+- [SendGrid notifications](sendgrid-notifications.md) — no Replit SendGrid integration exists; use plain SENDGRID_API_KEY; sender address must be a verified sender in SendGrid.

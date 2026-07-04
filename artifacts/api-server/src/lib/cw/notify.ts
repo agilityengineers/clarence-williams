@@ -7,7 +7,7 @@ import { logger } from "../logger";
  * is lost. The sender address must be a verified sender in SendGrid.
  */
 
-export type SendResult = { ok: true } | { ok: false; error: string };
+export type SendResult = { ok: true } | { ok: false; error: string; skipped?: boolean };
 
 export function isEmailConfigured(): boolean {
   return Boolean(process.env.SENDGRID_API_KEY);
@@ -23,11 +23,12 @@ export async function sendEmail(input: {
   const apiKey = process.env.SENDGRID_API_KEY;
   if (!apiKey) {
     logger.info({ subject: input.subject }, "[notify] SENDGRID_API_KEY not set — skipped email");
-    return { ok: false, error: "SendGrid is not configured (SENDGRID_API_KEY is not set)." };
+    return { ok: false, error: "SendGrid is not configured (SENDGRID_API_KEY is not set).", skipped: true };
   }
   try {
     const res = await fetch("https://api.sendgrid.com/v3/mail/send", {
       method: "POST",
+      signal: AbortSignal.timeout(10_000),
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         personalizations: [{ to: [{ email: input.to }] }],
@@ -53,6 +54,7 @@ export async function sendEmail(input: {
     return { ok: false, error: detail };
   } catch (err) {
     logger.error({ err }, "[notify] email delivery failed");
-    return { ok: false, error: "Could not reach SendGrid." };
+    const timedOut = err instanceof Error && err.name === "TimeoutError";
+    return { ok: false, error: timedOut ? "SendGrid did not respond in time." : "Could not reach SendGrid." };
   }
 }
