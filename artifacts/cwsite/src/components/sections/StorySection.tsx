@@ -15,19 +15,19 @@ export default function StorySection({ content }: { content: StoryContent }) {
 
   return (
     <section id="story" className="relative overflow-hidden bg-navy font-sans text-dark-ivory">
-      <div className="mx-auto max-w-[1920px] px-6 py-[110px] lg:px-[100px]">
+      <div className="mx-auto max-w-[1920px] px-6 py-16 md:py-[110px] lg:px-[100px]">
         <Eyebrow tone="dark">{content.eyebrow}</Eyebrow>
-        <div className="grid items-end gap-10 lg:grid-cols-[1fr_560px] lg:gap-20">
-          <h2 className="mt-7 font-display text-[44px] font-medium leading-[1.08] md:text-[72px]">
+        <div className="grid items-end gap-8 md:gap-10 lg:grid-cols-[1fr_560px] lg:gap-20">
+          <h2 className="mt-7 font-display text-[38px] font-medium leading-[1.08] sm:text-[44px] md:text-[72px]">
             {head}
             {tail ? <span className="italic text-gold">{tail}</span> : null}
           </h2>
-          <p className="m-0 text-[19px] leading-[1.7] text-dark-muted" style={{ textWrap: "pretty" }}>
+          <p className="m-0 text-[17px] leading-[1.7] text-dark-muted md:text-[19px]" style={{ textWrap: "pretty" }}>
             {content.intro}
           </p>
         </div>
 
-        <div className="relative mt-[88px] grid gap-12 md:grid-cols-3 md:gap-16">
+        <div className="relative mt-14 grid gap-10 md:mt-[88px] md:grid-cols-3 md:gap-16">
           <div aria-hidden className="absolute left-[60px] right-[60px] top-[27px] hidden h-px bg-navy-rule md:block" />
           {content.steps.map((step, i) => {
             const last = i === content.steps.length - 1;

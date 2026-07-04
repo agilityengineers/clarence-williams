@@ -12,20 +12,20 @@ export default function ResumeRequestSection({ content }: { content: ResumeConte
 
   return (
     <section className="flex-1 bg-navy font-sans text-dark-ivory">
-      <div className="mx-auto grid max-w-[1920px] items-start gap-16 px-6 pb-[110px] pt-[100px] lg:grid-cols-[1fr_760px] lg:gap-[110px] lg:px-[100px]">
+      <div className="mx-auto grid max-w-[1920px] items-start gap-12 px-6 pb-16 pt-14 md:gap-16 md:pb-[110px] md:pt-[100px] lg:grid-cols-[1fr_760px] lg:gap-[110px] lg:px-[100px]">
         {/* Left: intro */}
         <div className="flex flex-col items-start">
           <Eyebrow tone="dark">{content.eyebrow}</Eyebrow>
           <h1
-            className="mt-[30px] font-display text-[52px] font-medium leading-[1.06] md:text-[84px]"
+            className="mt-[30px] font-display text-[42px] font-medium leading-[1.08] sm:text-[52px] md:text-[84px] md:leading-[1.06]"
             style={{ textWrap: "balance" }}
           >
             {words.join(" ")} <span className="italic text-gold">{tail}</span>
           </h1>
-          <p className="mt-8 max-w-[680px] text-[21px] leading-[1.7] text-dark-muted" style={{ textWrap: "pretty" }}>
+          <p className="mt-7 max-w-[680px] text-[18px] leading-[1.7] text-dark-muted md:mt-8 md:text-[21px]" style={{ textWrap: "pretty" }}>
             {content.intro}
           </p>
-          <div className="mt-[52px] flex max-w-[680px] flex-col gap-[18px] self-stretch border-t border-navy-rule pt-9">
+          <div className="mt-10 flex max-w-[680px] flex-col gap-[18px] self-stretch border-t border-navy-rule pt-8 md:mt-[52px] md:pt-9">
             {content.credentialLines.map((line) => (
               <div key={line} className="flex items-baseline gap-[18px]">
                 <span className="font-display text-[24px] text-gold">—</span>

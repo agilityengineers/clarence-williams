@@ -8,7 +8,7 @@ export default function VenturesSection({ content }: { content: VenturesContent 
   const count = Math.max(content.brands.length, 1);
   return (
     <section id="ventures" className="bg-ivory font-sans text-ink">
-      <div className="mx-auto max-w-[1920px] px-6 py-[84px] lg:px-[100px]">
+      <div className="mx-auto max-w-[1920px] px-6 py-14 md:py-[84px] lg:px-[100px]">
         <div className="flex items-baseline justify-between">
           <Eyebrow tone="light">{content.eyebrow}</Eyebrow>
           <span className="text-[12px] tracking-[0.14em] text-ink-faint max-md:hidden">
@@ -16,7 +16,7 @@ export default function VenturesSection({ content }: { content: VenturesContent 
           </span>
         </div>
         <div
-          className="mt-12 grid border-y border-rule-light max-lg:grid-cols-1"
+          className="mt-9 grid border-y border-rule-light max-lg:grid-cols-1 md:mt-12"
           style={{ gridTemplateColumns: undefined }}
         >
           <div className="grid lg:hidden">

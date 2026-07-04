@@ -13,7 +13,7 @@ export default function AboutSection({ content }: { content: AboutContent }) {
 
   return (
     <section id="about" className="bg-ivory font-sans text-ink">
-      <div className="mx-auto grid max-w-[1920px] gap-14 px-6 pb-[100px] pt-[110px] lg:grid-cols-[480px_1fr] lg:gap-24 lg:px-[100px]">
+      <div className="mx-auto grid max-w-[1920px] gap-12 px-6 pb-16 pt-16 md:gap-14 md:pb-[100px] md:pt-[110px] lg:grid-cols-[480px_1fr] lg:gap-24 lg:px-[100px]">
         {/* Portrait with offset bronze frame */}
         <div className="flex flex-col gap-6">
           <div className="relative max-w-[480px]">
@@ -38,19 +38,19 @@ export default function AboutSection({ content }: { content: AboutContent }) {
         {/* Bio */}
         <div className="flex flex-col">
           <Eyebrow tone="light">{content.eyebrow}</Eyebrow>
-          <h2 className="mt-7 max-w-[1000px] font-display text-[40px] font-medium leading-[1.1] md:text-[64px]">
+          <h2 className="mt-7 max-w-[1000px] font-display text-[34px] font-medium leading-[1.12] sm:text-[40px] md:text-[64px]">
             &ldquo;{words.join(" ")} <span className="italic text-bronze">{tail}</span>&rdquo;
           </h2>
           {content.bioParagraphs.map((p, i) => (
             <p
               key={i}
-              className={`max-w-[940px] text-[19px] leading-[1.75] text-ink-body ${i === 0 ? "mt-9" : "mt-6"}`}
+              className={`max-w-[940px] text-[17px] leading-[1.75] text-ink-body md:text-[19px] ${i === 0 ? "mt-8 md:mt-9" : "mt-6"}`}
               style={{ textWrap: "pretty" }}
             >
               {p}
             </p>
           ))}
-          <div className="mt-[52px] grid max-w-[940px] gap-x-[60px] gap-y-5 border-t border-rule-light pt-9 md:grid-cols-2">
+          <div className="mt-10 grid max-w-[940px] gap-x-[60px] gap-y-5 border-t border-rule-light pt-8 md:mt-[52px] md:grid-cols-2 md:pt-9">
             {content.credentials.map((c) => (
               <div key={c.title} className="flex items-baseline gap-4">
                 <span className="font-display text-[22px] text-bronze">—</span>

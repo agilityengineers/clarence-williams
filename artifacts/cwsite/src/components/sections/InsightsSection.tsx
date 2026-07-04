@@ -39,7 +39,7 @@ export default function InsightsSection({ content }: { content: InsightsContent 
 
   return (
     <section id="insights" className="border-t border-rule-light bg-ivory font-sans text-ink">
-      <div className="mx-auto max-w-[1920px] px-6 pb-24 pt-[100px] lg:px-[100px]">
+      <div className="mx-auto max-w-[1920px] px-6 pb-16 pt-16 md:pb-24 md:pt-[100px] lg:px-[100px]">
         <div className="flex items-baseline justify-between">
           <Eyebrow tone="light">{content.eyebrow}</Eyebrow>
           <span className="text-[12px] tracking-[0.14em] text-ink-faint max-md:hidden">
@@ -47,7 +47,7 @@ export default function InsightsSection({ content }: { content: InsightsContent 
           </span>
         </div>
         <div className="mt-7 flex items-end justify-between gap-8 lg:gap-16">
-          <h2 className="m-0 font-display text-[40px] font-medium leading-[1.1] md:text-[64px]">
+          <h2 className="m-0 font-display text-[34px] font-medium leading-[1.1] sm:text-[40px] md:text-[64px]">
             {words.join(" ")} <span className="italic text-bronze">{tail}</span>
           </h2>
           <a
@@ -63,6 +63,15 @@ export default function InsightsSection({ content }: { content: InsightsContent 
         {content.layout === "Editorial List" && <EditorialList items={items} />}
         {content.layout === "Card Grid" && <CardGrid items={items} />}
         {content.layout === "Feature + List" && <FeatureList items={items} />}
+
+        <a
+          href={allArticlesUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-10 inline-block border-b border-bronze pb-1 text-[13px] tracking-[0.18em] text-bronze transition-opacity hover:opacity-75 md:hidden"
+        >
+          ALL ARTICLES →
+        </a>
       </div>
     </section>
   );
@@ -77,17 +86,24 @@ function EditorialList({ items }: { items: Article[] }) {
           href={it.link}
           target="_blank"
           rel="noopener noreferrer"
-          className="grid items-center gap-4 border-t border-rule-light py-[30px] text-ink transition-colors hover:bg-ivory-hover md:grid-cols-[90px_190px_176px_1fr_60px] md:gap-11"
+          className="grid items-center gap-4 border-t border-rule-light py-7 text-ink transition-colors hover:bg-ivory-hover md:grid-cols-[90px_190px_176px_1fr_60px] md:gap-11 md:py-[30px]"
         >
-          <span className="font-display text-[34px] text-bronze">{it.num}</span>
-          <span className="text-[13px] tracking-[0.16em] text-ink-muted">{it.dateLabel}</span>
+          <span className="flex items-baseline justify-between gap-4 md:contents">
+            <span className="font-display text-[28px] text-bronze md:text-[34px]">{it.num}</span>
+            <span className="text-[13px] tracking-[0.16em] text-ink-muted">{it.dateLabel}</span>
+          </span>
           {it.thumb ? (
-            <img src={it.thumb} alt="" className="block h-[118px] w-[176px] bg-[#E9E2D4] object-cover" loading="lazy" />
+            <img
+              src={it.thumb}
+              alt=""
+              className="block aspect-[176/118] w-full bg-[#E9E2D4] object-cover md:h-[118px] md:w-[176px]"
+              loading="lazy"
+            />
           ) : (
-            <span className="block h-[118px] w-[176px] bg-[#E9E2D4]" />
+            <span className="block aspect-[176/118] w-full bg-[#E9E2D4] md:h-[118px] md:w-[176px]" />
           )}
           <span>
-            <span className="block font-display text-[26px] font-medium leading-[1.25] md:text-[32px]">
+            <span className="block font-display text-[24px] font-medium leading-[1.25] md:text-[32px]">
               {it.title}
             </span>
             {it.excerpt ? (
@@ -141,9 +157,9 @@ function FeatureList({ items }: { items: Article[] }) {
         className="flex flex-col text-ink"
       >
         {feature.thumb ? (
-          <img src={feature.thumb} alt="" className="block h-[420px] w-full bg-[#E9E2D4] object-cover" loading="lazy" />
+          <img src={feature.thumb} alt="" className="block h-[240px] w-full bg-[#E9E2D4] object-cover md:h-[420px]" loading="lazy" />
         ) : (
-          <span className="block h-[420px] w-full bg-[#E9E2D4]" />
+          <span className="block h-[240px] w-full bg-[#E9E2D4] md:h-[420px]" />
         )}
         <span className="mt-[26px] text-[12px] tracking-[0.16em] text-ink-muted">
           {feature.dateLabel} — FEATURED

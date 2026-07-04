@@ -44,6 +44,8 @@
 
 html {
   height: 100%;
+  /* Keep in-page anchor targets clear of the sticky nav bar. */
+  scroll-padding-top: 88px;
 }
 
 body {
@@ -54,6 +56,13 @@ body {
   display: flex;
   flex-direction: column;
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Safety net: decorative offsets must never cause sideways scroll on phones. */
+html,
+body {
+  overflow-x: clip;
 }
 
 #root {
