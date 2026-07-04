@@ -69,6 +69,9 @@ export const settings = pgTable("settings", {
 export const sectionContent = pgTable("section_content", {
   type: text("type").primaryKey(),
   content: jsonb("content").notNull(),
+  /** Global master visibility for this section type. When false, the section is
+   * hidden everywhere it's placed, regardless of per-page pageSections.enabled. */
+  enabled: boolean("enabled").notNull().default(true),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

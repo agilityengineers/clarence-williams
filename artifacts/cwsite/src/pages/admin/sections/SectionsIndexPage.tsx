@@ -1,6 +1,10 @@
 import { useEffect } from "react";
 import { Link } from "wouter";
+import { apiGet } from "@/lib/api";
 import { sectionTypeLabels, stackableSectionTypes } from "@/lib/sections/schemas";
+import { useAdminQuery } from "../session";
+
+type SectionListItem = { type: string; enabled: boolean };
 
 const descriptions: Record<string, string> = {
   hero: "Name, tagline, CTAs, pillars, portrait, background theme",
@@ -23,6 +27,15 @@ export default function SectionsIndexPage() {
     document.title = "Section Content — Admin";
   }, []);
 
+  const listQuery = useAdminQuery<{ sections: SectionListItem[] }>(
+    ["admin", "sections"],
+    () => apiGet<{ sections: SectionListItem[] }>("/admin/sections"),
+    true,
+  );
+  const hiddenTypes = new Set(
+    (listQuery.data?.sections ?? []).filter((s) => !s.enabled).map((s) => s.type),
+  );
+
   const types = [...stackableSectionTypes, "footer" as const];
   return (
     <div>
@@ -38,7 +51,14 @@ export default function SectionsIndexPage() {
               href={`/sections/${t}`}
               className="block border border-rule-light bg-white px-5 py-4 transition-colors hover:border-bronze"
             >
-              <span className="font-sans text-[16px] font-semibold text-ink">{sectionTypeLabels[t]}</span>
+              <span className="flex items-center gap-2.5">
+                <span className="font-sans text-[16px] font-semibold text-ink">{sectionTypeLabels[t]}</span>
+                {hiddenTypes.has(t) ? (
+                  <span className="border border-rule-light px-2 py-0.5 font-sans text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted">
+                    Hidden
+                  </span>
+                ) : null}
+              </span>
               <span className="mt-1 block font-sans text-[13px] text-ink-muted">{descriptions[t]}</span>
             </Link>
           </li>

@@ -46,6 +46,15 @@ export async function getSectionContentMap(): Promise<Record<string, unknown>> {
   return Object.fromEntries(rows.map((r) => [r.type, r.content]));
 }
 
+/** Per-type global visibility flags — the admin's site-wide section toggle. */
+export async function getSectionEnabledMap(): Promise<Record<string, boolean>> {
+  const db = await getDb();
+  const rows = await db
+    .select({ type: schema.sectionContent.type, enabled: schema.sectionContent.enabled })
+    .from(schema.sectionContent);
+  return Object.fromEntries(rows.map((r) => [r.type, r.enabled]));
+}
+
 export async function getPublishedPage(slug: string): Promise<ResolvedPage | null> {
   await ensureBootstrapped();
   const db = await getDb();
@@ -59,6 +68,7 @@ export async function getPublishedPage(slug: string): Promise<ResolvedPage | nul
     .where(eq(schema.pageSections.pageId, page.id))
     .orderBy(asc(schema.pageSections.position));
   const shared = await getSectionContentMap();
+  const globalEnabled = await getSectionEnabledMap();
 
   const sections: ResolvedSection[] = [];
   for (const s of sectionRows) {
@@ -68,7 +78,9 @@ export async function getPublishedPage(slug: string): Promise<ResolvedPage | nul
     const merged = s.overrides ? { ...base, ...(s.overrides as Record<string, unknown>) } : base;
     const parsed = sectionSchemas[type].safeParse(merged);
     if (!parsed.success) continue; // never let one bad section take a page down
-    sections.push({ id: s.id, type, enabled: s.enabled, content: parsed.data });
+    // Effective visibility = global site-wide toggle AND this page's placement toggle.
+    const enabled = s.enabled && (globalEnabled[type] ?? true);
+    sections.push({ id: s.id, type, enabled, content: parsed.data });
   }
 
   return {
