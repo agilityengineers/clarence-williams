@@ -1,4 +1,5 @@
 import { Router, type IRouter } from "express";
+import { rateLimit } from "express-rate-limit";
 import { desc, eq } from "drizzle-orm";
 import { getDb, schema } from "../lib/cw/db";
 import { ensureBootstrapped } from "../lib/cw/bootstrap";
@@ -10,6 +11,33 @@ import { notifyLead } from "../lib/cw/notifications";
 import { sectionSchemas } from "../lib/cw/sections/schemas";
 
 const router: IRouter = Router();
+
+/**
+ * Shared limiter for both public lead forms: 10 submissions / 15 min / IP.
+ * Uses the in-memory store, which is per-instance on autoscale — the
+ * effective limit multiplies by live instance count and resets when an
+ * instance is recycled. Acceptable for spam deterrence; a shared store
+ * (e.g. rate-limit-postgresql) can be swapped in here without touching
+ * the routes. Relies on `trust proxy = 1` set in app.ts for correct IPs.
+ */
+const leadLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 10,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+  message: {
+    ok: false,
+    error: "Too many submissions from your network. Please try again in a few minutes.",
+  },
+});
+
+/**
+ * Honeypot: the forms render an off-screen "website" input that humans
+ * never see or fill. A non-empty value marks the submission as a bot.
+ */
+function isHoneypotTripped(body: unknown): boolean {
+  return String((body as { website?: unknown } | null)?.website ?? "").trim() !== "";
+}
 
 /** Everything the shell (nav + footer) needs in one call. */
 router.get("/public/layout", async (_req, res): Promise<void> => {
@@ -52,7 +80,7 @@ router.get("/public/assessments/:slug", async (req, res): Promise<void> => {
   res.json({ assessment });
 });
 
-router.post("/public/resume-request", async (req, res): Promise<void> => {
+router.post("/public/resume-request", leadLimiter, async (req, res): Promise<void> => {
   const values = {
     name: String(req.body?.name ?? "").trim(),
     email: String(req.body?.email ?? "").trim(),
@@ -78,6 +106,13 @@ router.post("/public/resume-request", async (req, res): Promise<void> => {
     return;
   }
 
+  // Bots that fill the honeypot get the real success shape but nothing
+  // is stored or emailed.
+  if (isHoneypotTripped(req.body)) {
+    res.json({ ok: true, firstName: values.name.split(" ")[0] });
+    return;
+  }
+
   await ensureBootstrapped();
   const db = await getDb();
   await db.insert(schema.resumeRequests).values(values);
@@ -92,7 +127,7 @@ router.post("/public/resume-request", async (req, res): Promise<void> => {
   res.json({ ok: true, firstName: values.name.split(" ")[0] });
 });
 
-router.post("/public/assessments/submit", async (req, res): Promise<void> => {
+router.post("/public/assessments/submit", leadLimiter, async (req, res): Promise<void> => {
   const input = req.body ?? {};
   const name = String(input.name ?? "").trim();
   const email = String(input.email ?? "").trim();
@@ -122,6 +157,13 @@ router.post("/public/assessments/submit", async (req, res): Promise<void> => {
   const scored = await scoreAssessment(assessmentId, answerOptionIds.map(String));
   if (!scored) {
     res.status(400).json({ ok: false, error: "Please answer every question, then try again." });
+    return;
+  }
+
+  // Honeypot check runs after scoring so bots receive a genuine-looking
+  // success payload, but no lead is stored and no notification is sent.
+  if (isHoneypotTripped(req.body)) {
+    res.json({ ok: true, score: scored.score, tier: scored.tier });
     return;
   }
 
