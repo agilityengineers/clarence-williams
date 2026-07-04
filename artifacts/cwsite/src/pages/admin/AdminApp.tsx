@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { Switch, Route, Redirect, useLocation } from "wouter";
 import { useSession } from "./session";
 import LoginPage from "./LoginPage";
+import ForgotPasswordPage from "./ForgotPasswordPage";
+import ResetPasswordPage from "./ResetPasswordPage";
 import DashboardLayout from "./DashboardLayout";
 import OverviewPage from "./OverviewPage";
 import PagesListPage from "./pages/PagesListPage";
@@ -51,6 +53,9 @@ export default function AdminApp() {
   return (
     <Switch>
       <Route path="/login" component={LoginPage} />
+      {/* Self-service password reset (issue #10) — both are unauthenticated. */}
+      <Route path="/forgot-password" component={ForgotPasswordPage} />
+      <Route path="/reset-password" component={ResetPasswordPage} />
       {/* The claim/setup flow is retired; keep the old URL working by redirecting. */}
       <Route path="/setup">
         <Redirect to="/login" replace />

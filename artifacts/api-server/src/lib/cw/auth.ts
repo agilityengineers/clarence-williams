@@ -47,6 +47,33 @@ export async function hasAdminUser(): Promise<boolean> {
   return rows.length > 0;
 }
 
+/** The single admin account, or null when none is provisioned yet. */
+export async function getAdminUser(): Promise<{ id: string; email: string } | null> {
+  await ensureBootstrapped();
+  const db = await getDb();
+  const rows = await db
+    .select({ id: schema.adminUsers.id, email: schema.adminUsers.email })
+    .from(schema.adminUsers)
+    .limit(1);
+  return rows[0] ?? null;
+}
+
+/**
+ * Set a new password for the admin. Because the session fingerprint is derived
+ * from the password hash (see sessionFingerprint / getSession), changing it
+ * here revokes every previously issued session — this is what logs out all
+ * devices after a self-service reset. The new hash is app-owned and survives
+ * restarts: seedAdminFromSecrets no longer overwrites an existing admin.
+ */
+export async function setAdminPassword(email: string, newPassword: string): Promise<void> {
+  const db = await getDb();
+  const passwordHash = await bcrypt.hash(newPassword, 12);
+  await db
+    .update(schema.adminUsers)
+    .set({ passwordHash })
+    .where(eq(schema.adminUsers.email, email.trim().toLowerCase()));
+}
+
 export async function verifyCredentials(email: string, password: string): Promise<boolean> {
   await ensureBootstrapped();
   const db = await getDb();

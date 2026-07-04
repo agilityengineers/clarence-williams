@@ -36,6 +36,21 @@ export const kv = pgTable("kv", {
 });
 
 /**
+ * Single-use, expiring password-reset tokens for the admin self-service reset
+ * flow. Only the SHA-256 hash of the token is stored — the raw token exists
+ * only inside the emailed link. A row is consumed (usedAt set) the instant a
+ * reset succeeds; expired and used rows are pruned opportunistically.
+ */
+export const passwordResetTokens = pgTable("password_reset_tokens", {
+  id: id(),
+  email: text("email").notNull(),
+  tokenHash: text("token_hash").notNull().unique(),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  usedAt: timestamp("used_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/**
  * Site-wide admin settings, one JSON document per key:
  * "site" -> { calendlyUrl, contact{email,phone,address}, metaDefaults{...}, insightsDefaults{feedUrl,count,layout} }
  */
