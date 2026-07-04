@@ -27,6 +27,7 @@ async function bootstrap() {
   const db = await getDb();
   await seedIfEmpty(db);
   await seedLegalPagesIfMissing(db);
+  await fixAuthorPageNavIfNeeded(db);
   await seedAdminFromSecrets(db);
 }
 
@@ -143,8 +144,9 @@ async function seedIfEmpty(db: Awaited<ReturnType<typeof getDb>>) {
       metaTitle: "Marketing Mayhem — Clarence Williams, Author",
       metaDescription:
         "Marketing Mayhem, the latest book by Clarence Williams, plus his earlier titles.",
-      showInNav: false,
-      navOrder: 100,
+      showInNav: true,
+      navLabel: "Books",
+      navOrder: 3,
       includeInSitemap: true,
       footerStyle: "full",
       sections: [{ type: "authorFeatured" }, { type: "authorArchive" }, { type: "bookCall" }],
@@ -301,6 +303,32 @@ async function seedLegalPagesIfMissing(db: Awaited<ReturnType<typeof getDb>>) {
     .insert(schema.kv)
     .values({ key: "seeded.legalPages.v1", value: new Date().toISOString() })
     .onConflictDoNothing();
+}
+
+/**
+ * The `author` page was originally seeded with `showInNav: false`, which left
+ * it published but with no internal link pointing to it anywhere on the
+ * site (SEO issue: orphaned page, no crawl path or anchor text). This adds
+ * it to the main navigation on any database seeded before this fix, without
+ * touching Clarence's own edits if he has since customized the page's nav
+ * settings from the dashboard. Runs behind its own kv flag so it fires
+ * exactly once per database.
+ */
+async function fixAuthorPageNavIfNeeded(db: Awaited<ReturnType<typeof getDb>>) {
+  const flagKey = "fixed.authorPageNav.v1";
+  const flag = await db.select().from(schema.kv).where(eq(schema.kv.key, flagKey));
+  if (flag.length > 0) return;
+
+  const [author] = await db.select().from(schema.pages).where(eq(schema.pages.slug, "author"));
+  if (author && !author.showInNav) {
+    await db
+      .update(schema.pages)
+      .set({ showInNav: true, navLabel: author.navLabel ?? "Books", navOrder: 3 })
+      .where(eq(schema.pages.id, author.id));
+    logger.info("Added /author to main navigation (was orphaned with no internal links)");
+  }
+
+  await db.insert(schema.kv).values({ key: flagKey, value: new Date().toISOString() }).onConflictDoNothing();
 }
 
 /**

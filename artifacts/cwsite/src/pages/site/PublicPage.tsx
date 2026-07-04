@@ -9,6 +9,14 @@ import { apiGet, apiUrl, ApiError } from "@/lib/api";
 import { applyPageMeta } from "@/lib/head";
 import type { ResolvedPage } from "@/lib/types";
 
+/**
+ * Section types whose component already renders a visible page-level <h1>
+ * (hero, the author page's featured-book intro, and the resume request
+ * form). When a page includes one of these, PublicPage must NOT also emit
+ * its own <h1> — that would leave two on the same document.
+ */
+const SECTIONS_WITH_OWN_H1 = new Set(["hero", "authorFeatured", "resumeRequest"]);
+
 export default function PublicPage({ slug }: { slug: string }) {
   const [location] = useLocation();
 
@@ -55,10 +63,13 @@ export default function PublicPage({ slug }: { slug: string }) {
     );
   }
 
+  const hasOwnH1 = page.sections.some((s) => s.enabled && SECTIONS_WITH_OWN_H1.has(s.type));
+
   return (
     <>
       <SiteNav activeSlug={page.slug} />
       <main className="flex flex-1 flex-col">
+        {!hasOwnH1 ? <h1 className="sr-only">{page.title}</h1> : null}
         <SectionRenderer sections={page.sections} />
       </main>
       <SiteFooter variant={page.footerStyle} />
