@@ -47,6 +47,13 @@ export default function LoginPage() {
         <h1 className="mt-8 font-display text-[40px] leading-tight text-dark-ivory">
           Admin <span className="italic text-gold">sign in</span>
         </h1>
+        {session.data && !session.data.hasAdmin && (
+          <p className="mt-6 border border-gold/40 bg-gold/10 p-4 text-sm text-dark-ivory">
+            No admin account is configured. Set the <code>ADMIN_EMAIL</code> and{" "}
+            <code>ADMIN_PASSWORD</code> secrets (in development and in the deployment), then
+            restart or redeploy to sign in.
+          </p>
+        )}
         <AuthForm
           onSubmit={onSubmit}
           submitLabel="Sign In"

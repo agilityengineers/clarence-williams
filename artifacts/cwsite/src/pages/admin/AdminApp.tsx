@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Switch, Route, useLocation } from "wouter";
+import { Switch, Route, Redirect, useLocation } from "wouter";
 import { useSession } from "./session";
 import LoginPage from "./LoginPage";
 import DashboardLayout from "./DashboardLayout";
@@ -51,6 +51,10 @@ export default function AdminApp() {
   return (
     <Switch>
       <Route path="/login" component={LoginPage} />
+      {/* The claim/setup flow is retired; keep the old URL working by redirecting. */}
+      <Route path="/setup">
+        <Redirect to="/login" replace />
+      </Route>
       <Route path="/">
         <Guarded>
           <OverviewPage />
