@@ -16,6 +16,7 @@ import BooksPage from "./books/BooksPage";
 import MediaPage from "./media/MediaPage";
 import LeadsPage from "./leads/LeadsPage";
 import SettingsPage from "./settings/SettingsPage";
+import NotificationsPage from "./notifications/NotificationsPage";
 import ApiKeysPage from "./api-keys/ApiKeysPage";
 import NotFound from "@/pages/not-found";
 
@@ -116,6 +117,11 @@ export default function AdminApp() {
       <Route path="/settings">
         <Guarded>
           <SettingsPage />
+        </Guarded>
+      </Route>
+      <Route path="/notifications">
+        <Guarded>
+          <NotificationsPage />
         </Guarded>
       </Route>
       <Route path="/api-keys">

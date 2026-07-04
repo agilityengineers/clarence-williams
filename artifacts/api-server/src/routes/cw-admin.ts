@@ -8,6 +8,18 @@ import { requireAdmin } from "../middlewares/require-admin";
 import { sectionSchemas, sectionTypeLabels, stackableSectionTypes, type SectionType } from "../lib/cw/sections/schemas";
 import { getSectionJsonSchemas } from "../lib/cw/sections/jsonschema";
 import { siteSettingsSchema, saveSiteSettings, getSiteSettings } from "../lib/cw/settings";
+import {
+  notificationSettingsSchema,
+  getNotificationSettings,
+  saveNotificationSettings,
+  resolveRecipient,
+  renderTemplate,
+  htmlToText,
+  SAMPLE_LEAD_DATA,
+  TEMPLATE_PLACEHOLDERS,
+  type LeadKind,
+} from "../lib/cw/notifications";
+import { isEmailConfigured, sendEmail } from "../lib/cw/notify";
 import { assessmentEditorSchema } from "../lib/cw/assessments";
 
 const router: IRouter = Router();
@@ -55,6 +67,49 @@ router.put("/admin/settings", async (req, res): Promise<void> => {
   }
   await saveSiteSettings(parsed.data);
   res.json({ ok: true });
+});
+
+/* ---------------------------- notifications ---------------------------- */
+
+router.get("/admin/notifications", async (_req, res): Promise<void> => {
+  const settings = await getNotificationSettings();
+  res.json({
+    settings,
+    configured: isEmailConfigured(),
+    placeholders: TEMPLATE_PLACEHOLDERS,
+    defaultRecipient: (await getSiteSettings()).contact.email,
+  });
+});
+
+router.put("/admin/notifications", async (req, res): Promise<void> => {
+  const parsed = notificationSettingsSchema.safeParse(req.body);
+  if (!parsed.success) {
+    res.status(400).json({ ok: false, error: formatZodError(parsed.error) });
+    return;
+  }
+  await saveNotificationSettings(parsed.data);
+  res.json({ ok: true });
+});
+
+/** Sends the selected template with sample data so the admin can verify delivery. */
+router.post("/admin/notifications/test", async (req, res): Promise<void> => {
+  const kind = String(req.body?.kind ?? "");
+  if (kind !== "assessment" && kind !== "resume") {
+    res.status(400).json({ ok: false, error: "Invalid template kind." });
+    return;
+  }
+  const settings = await getNotificationSettings();
+  const template = settings[kind as LeadKind];
+  const data = SAMPLE_LEAD_DATA[kind as LeadKind];
+  const to = await resolveRecipient(settings);
+  const subject = `[Test] ${renderTemplate(template.subject, data, "text")}`;
+  const html = renderTemplate(template.html, data, "html");
+  const result = await sendEmail({ to, from: settings.from, subject, html, text: htmlToText(html) });
+  if (!result.ok) {
+    res.status(400).json({ ok: false, error: result.error });
+    return;
+  }
+  res.json({ ok: true, to });
 });
 
 /* --------------------------- section content --------------------------- */

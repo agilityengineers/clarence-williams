@@ -6,7 +6,7 @@ import { getNavPages, getPublishedPage, getSectionContentMap } from "../lib/cw/p
 import { getSiteSettings } from "../lib/cw/settings";
 import { getAssessmentBySlug, scoreAssessment } from "../lib/cw/assessments";
 import { getFeedItems } from "../lib/cw/rss";
-import { notifyAdmin } from "../lib/cw/notify";
+import { notifyLead } from "../lib/cw/notifications";
 import { sectionSchemas } from "../lib/cw/sections/schemas";
 
 const router: IRouter = Router();
@@ -82,21 +82,12 @@ router.post("/public/resume-request", async (req, res): Promise<void> => {
   const db = await getDb();
   await db.insert(schema.resumeRequests).values(values);
 
-  await notifyAdmin(
-    `Resume request from ${values.name}`,
-    [
-      `A new resume request was submitted on clarencewilliams.com.`,
-      ``,
-      `Name: ${values.name}`,
-      `Email: ${values.email}`,
-      `Company: ${values.company || "—"}`,
-      ``,
-      `Role / opportunity:`,
-      values.roleDetails,
-      ``,
-      `This lead is also stored in the admin dashboard under Leads.`,
-    ].join("\n"),
-  );
+  await notifyLead("resume", {
+    name: values.name,
+    email: values.email,
+    company: values.company || "—",
+    roleDetails: values.roleDetails,
+  });
 
   res.json({ ok: true, firstName: values.name.split(" ")[0] });
 });
@@ -148,20 +139,14 @@ router.post("/public/assessments/submit", async (req, res): Promise<void> => {
     tierLabel: scored.tier.label,
   });
 
-  await notifyAdmin(
-    `${assessment?.title ?? "Assessment"} lead: ${name} scored ${scored.score}`,
-    [
-      `A new assessment was completed on clarencewilliams.com.`,
-      ``,
-      `Assessment: ${assessment?.title ?? assessmentId}`,
-      `Name: ${name}`,
-      `Email: ${email}`,
-      `Phone: ${phone}`,
-      `Score: ${scored.score}/100 — ${scored.tier.label}`,
-      ``,
-      `This lead is also stored in the admin dashboard under Leads.`,
-    ].join("\n"),
-  );
+  await notifyLead("assessment", {
+    assessment: assessment?.title ?? "Assessment",
+    name,
+    email,
+    phone,
+    score: String(scored.score),
+    tier: scored.tier.label,
+  });
 
   res.json({ ok: true, score: scored.score, tier: scored.tier });
 });

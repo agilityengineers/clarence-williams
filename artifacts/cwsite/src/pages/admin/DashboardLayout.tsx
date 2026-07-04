@@ -58,6 +58,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             ["Media", "/media"],
             ["Leads", "/leads"],
             ["Settings", "/settings"],
+            ["Notifications", "/notifications"],
             ["API Keys", "/api-keys"],
           ].map(([label, href]) => (
             <Link
