@@ -4,6 +4,7 @@ import SiteFooter from "@/components/SiteFooter";
 import SiteNav from "@/components/SiteNav";
 import NotFound from "@/pages/not-found";
 import { apiGet, ApiError } from "@/lib/api";
+import { applyPageMeta } from "@/lib/head";
 import { useLayoutData } from "@/lib/layout";
 import AssessmentFlow, { type PublicAssessment } from "./AssessmentFlow";
 
@@ -28,16 +29,10 @@ export default function AssessmentPage({ slug }: { slug: string }) {
 
   useEffect(() => {
     if (!assessment) return;
-    document.title = `${assessment.title} — Clarence Williams`;
-    if (assessment.intro.description) {
-      let meta = document.querySelector('meta[name="description"]');
-      if (!meta) {
-        meta = document.createElement("meta");
-        meta.setAttribute("name", "description");
-        document.head.appendChild(meta);
-      }
-      meta.setAttribute("content", assessment.intro.description);
-    }
+    applyPageMeta({
+      title: `${assessment.title} — Clarence Williams`,
+      description: assessment.intro.description || undefined,
+    });
   }, [assessment]);
 
   if (error) {

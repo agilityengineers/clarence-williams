@@ -27,6 +27,31 @@ type ResumeRequest = {
 
 type AssessmentRef = { id: string; title: string };
 
+/** Reply link with a prefilled draft so the dashboard acts like a light CRM. */
+function mailtoHref(email: string, subject: string, body: string): string {
+  return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+function firstNameOf(name: string): string {
+  return name.trim().split(/\s+/)[0] || "there";
+}
+
+function assessmentMailto(s: Submission, assessmentTitle: string): string {
+  return mailtoHref(
+    s.email,
+    `Your ${assessmentTitle} results — next steps`,
+    `Hi ${firstNameOf(s.name)},\n\nThank you for completing the ${assessmentTitle}. You scored ${s.score}/100 — "${s.tierLabel}".\n\nI'd welcome a short conversation about what the results suggest for your organization. Would a 15-minute call this week work?\n\n— Clarence`,
+  );
+}
+
+function resumeMailto(r: ResumeRequest): string {
+  return mailtoHref(
+    r.email,
+    `Resume request${r.company ? ` — ${r.company}` : ""}`,
+    `Hi ${firstNameOf(r.name)},\n\nThank you for reaching out${r.company ? ` about the opportunity at ${r.company}` : ""}. Please find my current resume attached.\n\n— Clarence`,
+  );
+}
+
 export default function LeadsPage() {
   useEffect(() => {
     document.title = "Leads — Admin";
@@ -79,7 +104,7 @@ export default function LeadsPage() {
                   <td className="px-4 py-3 whitespace-nowrap">{new Date(s.createdAt).toLocaleDateString()}</td>
                   <td className="px-4 py-3">{assessmentName.get(s.assessmentId) ?? "—"}</td>
                   <td className="px-4 py-3 font-semibold text-ink">{s.name}</td>
-                  <td className="px-4 py-3"><a className="text-bronze hover:underline" href={`mailto:${s.email}`}>{s.email}</a></td>
+                  <td className="px-4 py-3"><a className="text-bronze hover:underline" href={assessmentMailto(s, assessmentName.get(s.assessmentId) ?? "assessment")}>{s.email}</a></td>
                   <td className="px-4 py-3 whitespace-nowrap">{s.phone}</td>
                   <td className="px-4 py-3 font-semibold">{s.score}</td>
                   <td className="px-4 py-3">{s.tierLabel}</td>
@@ -110,7 +135,7 @@ export default function LeadsPage() {
             <div key={r.id} className={`border border-rule-light bg-white p-5 ${r.status === "new" ? "border-l-4 border-l-bronze" : ""}`}>
               <div className="flex flex-wrap items-center gap-x-5 gap-y-1">
                 <span className="font-sans text-[16px] font-semibold text-ink">{r.name}</span>
-                <a className="font-sans text-[14px] text-bronze hover:underline" href={`mailto:${r.email}`}>{r.email}</a>
+                <a className="font-sans text-[14px] text-bronze hover:underline" href={resumeMailto(r)}>{r.email}</a>
                 {r.company ? <span className="font-sans text-[14px] text-ink-muted">{r.company}</span> : null}
                 <span className="ml-auto font-sans text-[12px] text-ink-muted">{new Date(r.createdAt).toLocaleString()}</span>
                 <LeadStatusButton kind="resume" id={r.id} status={r.status} />

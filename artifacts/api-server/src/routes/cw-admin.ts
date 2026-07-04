@@ -421,12 +421,13 @@ router.get("/admin/leads/export", async (req, res): Promise<void> => {
   const type = String(req.query.type ?? "");
   const db = await getDb();
 
+  const stamp = new Date().toISOString().slice(0, 10);
   let filename: string;
   let rows: string[][];
 
   if (type === "resume") {
     const data = await db.select().from(schema.resumeRequests).orderBy(desc(schema.resumeRequests.createdAt));
-    filename = "resume-requests.csv";
+    filename = `resume-requests-${stamp}.csv`;
     rows = [
       ["Date", "Name", "Email", "Company", "Role details", "Status"],
       ...data.map((r) => [r.createdAt.toISOString(), r.name, r.email, r.company, r.roleDetails, r.status]),
@@ -437,7 +438,7 @@ router.get("/admin/leads/export", async (req, res): Promise<void> => {
       db.select().from(schema.assessments),
     ]);
     const names = new Map(assessments.map((a) => [a.id, a.title]));
-    filename = "assessment-leads.csv";
+    filename = `assessment-leads-${stamp}.csv`;
     rows = [
       ["Date", "Assessment", "Name", "Email", "Phone", "Score", "Tier", "Status"],
       ...data.map((s) => [
@@ -453,7 +454,8 @@ router.get("/admin/leads/export", async (req, res): Promise<void> => {
     ];
   }
 
-  const csv = rows.map((row) => row.map(csvCell).join(",")).join("\r\n");
+  // BOM so Excel detects UTF-8 and renders non-ASCII names correctly.
+  const csv = "\uFEFF" + rows.map((row) => row.map(csvCell).join(",")).join("\r\n");
   res.set({
     "Content-Type": "text/csv; charset=utf-8",
     "Content-Disposition": `attachment; filename="${filename}"`,

@@ -16,6 +16,7 @@ export type ResolvedPage = {
   title: string;
   metaTitle: string;
   metaDescription: string;
+  ogImageId: string | null;
   status: "draft" | "published";
   includeInSitemap: boolean;
   footerStyle: "full" | "slim";

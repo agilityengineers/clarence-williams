@@ -51,7 +51,8 @@ export default function AssessmentFlow({
   const [screen, setScreen] = useState<Screen>("intro");
   const [idx, setIdx] = useState(0);
   const [picks, setPicks] = useState<string[]>([]);
-  const [lead, setLead] = useState({ name: "", email: "", phone: "" });
+  // `website` is a honeypot: rendered off-screen, never filled by humans.
+  const [lead, setLead] = useState({ name: "", email: "", phone: "", website: "" });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<Extract<AssessmentSubmitResult, { ok: true }> | null>(null);
@@ -195,6 +196,19 @@ export default function AssessmentFlow({
             {assessment.resultsCopy.leadCapture.description}
           </p>
           <div className="mt-8 flex flex-col gap-6">
+            <div aria-hidden="true" className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden">
+              <label>
+                Website
+                <input
+                  name="website"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={lead.website}
+                  onChange={(e) => setLead({ ...lead, website: e.target.value })}
+                />
+              </label>
+            </div>
             <CaptureField label="FULL NAME *" type="text" value={lead.name} onChange={(v) => setLead({ ...lead, name: v })} placeholder="Jane Smith" />
             <CaptureField label="EMAIL *" type="email" value={lead.email} onChange={(v) => setLead({ ...lead, email: v })} placeholder="jane@company.com" />
             <CaptureField label="PHONE *" type="tel" value={lead.phone} onChange={(v) => setLead({ ...lead, phone: v })} placeholder="(555) 123-4567" />
