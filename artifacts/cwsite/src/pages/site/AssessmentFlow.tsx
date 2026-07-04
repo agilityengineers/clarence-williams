@@ -128,7 +128,11 @@ export default function AssessmentFlow({
             BEGIN THE ASSESSMENT
           </button>
           <span className="mt-6 text-[13px] text-dark-faint">
-            Confidential. Your responses are reviewed only by Clarence&rsquo;s team.
+            Confidential. Your responses are reviewed only by Clarence&rsquo;s team. See our{" "}
+            <Link href="/privacy" className="border-b border-navy-rule pb-px text-dark-muted transition-colors hover:border-gold hover:text-dark-ivory">
+              Privacy Policy
+            </Link>
+            .
           </span>
           {otherHref ? (
             <Link
