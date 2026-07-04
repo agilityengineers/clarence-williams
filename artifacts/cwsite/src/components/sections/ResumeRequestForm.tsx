@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "wouter";
 import { apiPost, ApiError } from "@/lib/api";
 
 const inputClass =
@@ -123,6 +124,13 @@ export default function ResumeRequestForm({
         >
           {pending ? "SUBMITTING…" : "SUBMIT REQUEST"}
         </button>
+        <p className="text-[13px] leading-[1.6] text-dark-faint">
+          We&rsquo;ll never share your information. See our{" "}
+          <Link href="/privacy" className="border-b border-navy-rule pb-px text-dark-muted transition-colors hover:border-gold hover:text-dark-ivory">
+            Privacy Policy
+          </Link>
+          .
+        </p>
       </form>
     </div>
   );
