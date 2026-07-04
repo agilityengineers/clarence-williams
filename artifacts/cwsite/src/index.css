@@ -1,6 +1,36 @@
 @import "tailwindcss";
 
 /*
+ * Self-hosted font subsets (latin-only, variable-weight WOFF2) replacing the
+ * render-blocking Google Fonts stylesheet. Only the weights/styles actually
+ * used across the site are included (Archivo 400-700 normal, Cormorant
+ * Garamond 400-600 normal + italic).
+ */
+@font-face {
+  font-family: "Archivo";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("./assets/fonts/archivo-variable-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("./assets/fonts/cormorant-garamond-normal-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: italic;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("./assets/fonts/cormorant-garamond-italic-latin.woff2") format("woff2");
+}
+
+/*
  * ClarenceWilliams.com design tokens — from the approved design handoff.
  * Dark surfaces use navy + gold; light surfaces use ivory + bronze.
  */
