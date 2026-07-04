@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useLocation } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiError, apiPost, assetUrl } from "@/lib/api";
 import { useSession } from "./session";
@@ -67,6 +67,14 @@ export default function LoginPage() {
             },
           ]}
         />
+        <p className="mt-6 text-center">
+          <Link
+            href="/forgot-password"
+            className="font-sans text-[13px] font-semibold uppercase tracking-[0.16em] text-dark-muted transition-colors hover:text-gold"
+          >
+            Forgot password?
+          </Link>
+        </p>
       </div>
     </main>
   );
