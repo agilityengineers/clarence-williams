@@ -49,12 +49,21 @@ export function setupClientServing(app: Express): void {
 
     let html = baseHtml;
     try {
-      const meta = await resolveHeadMeta(req.path);
-      if (meta) {
-        html = injectHeadMeta(baseHtml, meta);
-        if (meta.bodyHtml) html = injectBodyHtml(html, meta.bodyHtml);
-        if (meta.jsonLd) html = injectJsonLd(html, meta.jsonLd);
+      const result = await resolveHeadMeta(req.path);
+      if (result.kind === "redirect") {
+        res.redirect(301, result.to);
+        return;
       }
+      if (result.kind === "not-found") {
+        res.status(404).set("Content-Type", "text/html; charset=utf-8").send(html);
+        return;
+      }
+      if (result.kind === "meta") {
+        html = injectHeadMeta(baseHtml, result.meta);
+        if (result.meta.bodyHtml) html = injectBodyHtml(html, result.meta.bodyHtml);
+        if (result.meta.jsonLd) html = injectJsonLd(html, result.meta.jsonLd);
+      }
+      // "pass" (e.g. admin routes) falls through and serves default HTML.
     } catch (err) {
       logger.warn({ err, path: req.path }, "Head meta injection failed; serving default HTML");
     }

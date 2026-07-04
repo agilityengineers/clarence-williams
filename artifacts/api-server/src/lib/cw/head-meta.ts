@@ -45,29 +45,53 @@ const ASSESSMENT_CROSS_LINK: Record<string, string> = {
 };
 
 /**
- * Resolve the head meta for a public route path (e.g. "/", "/services",
- * "/assessment/agility"). Returns null for routes that should keep the
- * default index.html meta: admin routes, unknown/not-found pages, and any
- * path outside the public route set (aligned with /api/sitemap.xml).
+ * Result of resolving a request path against the public route set:
+ * - "meta": a real, indexable page/assessment — serve HTML with this meta.
+ * - "redirect": path should not be indexed under this URL; 301 to `to`.
+ * - "not-found": path looks like a public route but doesn't back a real
+ *   record (or isn't a route the SPA recognizes) — send a real 404.
+ * - "pass": route the HTML-serving layer doesn't validate (admin), keep
+ *   default index.html meta and serve normally (client handles auth/404).
  */
-export async function resolveHeadMeta(pathname: string): Promise<HeadMeta | null> {
+export type HeadMetaResult =
+  | { kind: "meta"; meta: HeadMeta }
+  | { kind: "redirect"; to: string }
+  | { kind: "not-found" }
+  | { kind: "pass" };
+
+/**
+ * Resolve a request path against the public route set (e.g. "/", "/services",
+ * "/assessment/agility") so the HTML-serving layer can decide between
+ * serving the meta-injected shell, 404ing, or redirecting. Mirrors the
+ * client router in cwsite/src/App.tsx exactly so crawlers never see a 200
+ * for a URL the SPA itself would render as not-found.
+ */
+export async function resolveHeadMeta(pathname: string): Promise<HeadMetaResult> {
   const base = getBaseUrl();
   const clean = pathname.replace(/\/+$/, "") || "/";
   const segments = clean.split("/").filter(Boolean);
 
-  // Home is served at "/" (slug "home"); a literal /home 404s in the SPA.
-  if (segments.length === 0) {
-    return pageMeta("home", base, "/");
+  // Home is served at "/" (slug "home"). A literal /home 404s in the SPA,
+  // so never treat it as canonical — redirect it to the real home URL.
+  if (segments.length === 1 && segments[0] === "home") {
+    return { kind: "redirect", to: "/" };
   }
-  // Admin/dashboard routes get no previews (out of scope).
-  if (segments[0] === "admin") return null;
+  if (segments.length === 0) {
+    const meta = await pageMeta("home", base, "/");
+    return meta ? { kind: "meta", meta } : { kind: "not-found" };
+  }
+  // Admin/dashboard routes: client-rendered, auth-gated, no SEO previews.
+  if (segments[0] === "admin") return { kind: "pass" };
   if (segments[0] === "assessment" && segments.length === 2) {
-    return assessmentMeta(segments[1], base, clean);
+    const meta = await assessmentMeta(segments[1], base, clean);
+    return meta ? { kind: "meta", meta } : { kind: "not-found" };
   }
   if (segments.length === 1) {
-    return pageMeta(segments[0], base, clean);
+    const meta = await pageMeta(segments[0], base, clean);
+    return meta ? { kind: "meta", meta } : { kind: "not-found" };
   }
-  return null;
+  // Any other path shape isn't a route the SPA recognizes.
+  return { kind: "not-found" };
 }
 
 async function pageMeta(slug: string, base: string, path: string): Promise<HeadMeta | null> {
