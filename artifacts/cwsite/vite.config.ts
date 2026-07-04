@@ -62,6 +62,35 @@ function robotsTxtPlugin(): Plugin {
   };
 }
 
+/**
+ * Injects absolute-URL Open Graph tags into the built index.html. Link
+ * crawlers (LinkedIn, Facebook, Slack) don't execute JS, so these static
+ * tags are what shared links actually render. og:image must be an
+ * absolute URL; opengraph.jpg (1280×720) ships in public/. Skipped when
+ * no site origin is known at build time.
+ */
+function ogTagsPlugin(): Plugin {
+  return {
+    name: "inject-og-tags",
+    apply: "build",
+    transformIndexHtml(html) {
+      const origin = getSiteOrigin();
+      if (!origin) return html;
+      const tags = [
+        `<meta property="og:url" content="${origin}/" />`,
+        `<meta property="og:image" content="${origin}/opengraph.jpg" />`,
+        `<meta property="og:image:width" content="1280" />`,
+        `<meta property="og:image:height" content="720" />`,
+        `<meta property="og:image:alt" content="Clarence Williams — Business &amp; Management Consultant" />`,
+        `<meta name="twitter:image" content="${origin}/opengraph.jpg" />`,
+      ]
+        .map((t) => `    ${t}`)
+        .join("\n");
+      return html.replace('<meta name="twitter:card"', `${tags}\n    <meta name="twitter:card"`);
+    },
+  };
+}
+
 export default defineConfig({
   base: basePath,
   plugins: [
@@ -69,6 +98,7 @@ export default defineConfig({
     tailwindcss(),
     runtimeErrorOverlay(),
     robotsTxtPlugin(),
+    ogTagsPlugin(),
     ...(process.env.NODE_ENV !== "production" &&
     process.env.REPL_ID !== undefined
       ? [

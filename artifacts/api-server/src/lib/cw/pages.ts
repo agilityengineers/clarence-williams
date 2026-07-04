@@ -17,6 +17,7 @@ export type ResolvedPage = {
   title: string;
   metaTitle: string;
   metaDescription: string;
+  ogImageId: string | null;
   status: "draft" | "published";
   includeInSitemap: boolean;
   footerStyle: "full" | "slim";
@@ -76,6 +77,7 @@ export async function getPublishedPage(slug: string): Promise<ResolvedPage | nul
     title: page.title,
     metaTitle: page.metaTitle,
     metaDescription: page.metaDescription,
+    ogImageId: page.ogImageId,
     status: page.status,
     includeInSitemap: page.includeInSitemap,
     footerStyle: page.footerStyle,

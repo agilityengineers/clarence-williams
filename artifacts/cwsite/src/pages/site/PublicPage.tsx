@@ -5,7 +5,8 @@ import SiteFooter from "@/components/SiteFooter";
 import SiteNav from "@/components/SiteNav";
 import SectionRenderer from "@/components/sections/SectionRenderer";
 import NotFound from "@/pages/not-found";
-import { apiGet, ApiError } from "@/lib/api";
+import { apiGet, apiUrl, ApiError } from "@/lib/api";
+import { applyPageMeta } from "@/lib/head";
 import type { ResolvedPage } from "@/lib/types";
 
 export default function PublicPage({ slug }: { slug: string }) {
@@ -23,16 +24,13 @@ export default function PublicPage({ slug }: { slug: string }) {
 
   useEffect(() => {
     if (!page) return;
-    document.title = page.metaTitle || page.title;
-    if (page.metaDescription) {
-      let meta = document.querySelector('meta[name="description"]');
-      if (!meta) {
-        meta = document.createElement("meta");
-        meta.setAttribute("name", "description");
-        document.head.appendChild(meta);
-      }
-      meta.setAttribute("content", page.metaDescription);
-    }
+    applyPageMeta({
+      title: page.metaTitle || page.title,
+      description: page.metaDescription || undefined,
+      ogImage: page.ogImageId
+        ? new URL(apiUrl(`/media/${page.ogImageId}`), window.location.origin).toString()
+        : undefined,
+    });
   }, [page]);
 
   // home is served at "/"; a literal /home request 404s like the original.
