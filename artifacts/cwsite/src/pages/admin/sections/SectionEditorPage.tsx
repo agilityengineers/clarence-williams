@@ -23,9 +23,9 @@ export default function SectionEditorPage({ type }: { type: string }) {
   const sectionType = type as SectionType;
   const isValid = type in sectionSchemas;
 
-  const contentQuery = useAdminQuery<{ content: unknown }>(
+  const contentQuery = useAdminQuery<{ content: unknown; enabled: boolean }>(
     ["admin", "section", type],
-    () => apiGet<{ content: unknown }>(`/admin/sections/${type}`),
+    () => apiGet<{ content: unknown; enabled: boolean }>(`/admin/sections/${type}`),
     isValid,
   );
   const mediaQuery = useAdminQuery<{ items: MediaItem[] }>(
@@ -52,6 +52,7 @@ export default function SectionEditorPage({ type }: { type: string }) {
             type={sectionType}
             schema={jsonSchema}
             initialValue={resolveValue(sectionType, contentQuery.data.content)}
+            initialEnabled={contentQuery.data.enabled}
             media={mediaQuery.data.items.map((m) => ({ id: m.id, filename: m.filename, alt: m.alt }))}
           />
         ) : (

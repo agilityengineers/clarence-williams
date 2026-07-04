@@ -118,7 +118,7 @@ router.get("/admin/sections", async (_req, res): Promise<void> => {
   const db = await getDb();
   const rows = await db.select().from(schema.sectionContent);
   res.json({
-    sections: rows.map((r) => ({ type: r.type, updatedAt: r.updatedAt })),
+    sections: rows.map((r) => ({ type: r.type, enabled: r.enabled, updatedAt: r.updatedAt })),
     labels: sectionTypeLabels,
   });
 });
@@ -140,6 +140,7 @@ router.get("/admin/sections/:type", async (req, res): Promise<void> => {
     type,
     label: sectionTypeLabels[type as SectionType],
     content: rows[0]?.content ?? null,
+    enabled: rows[0]?.enabled ?? true,
     schema: jsonSchemas[type]?.schema ?? null,
   });
 });
@@ -150,18 +151,31 @@ router.put("/admin/sections/:type", async (req, res): Promise<void> => {
     res.status(400).json({ ok: false, error: `Unknown section type "${type}".` });
     return;
   }
-  const parsed = sectionSchemas[type as SectionType].safeParse(req.body);
+  // Body is { content, enabled }: content is the section's shared copy; enabled is
+  // the global site-wide visibility toggle. `enabled` is optional (defaults to true
+  // for a brand-new row; left unchanged on update when omitted).
+  const body = (req.body ?? {}) as { content?: unknown; enabled?: unknown };
+  if (body.enabled !== undefined && typeof body.enabled !== "boolean") {
+    res.status(400).json({ ok: false, error: "`enabled` must be a boolean." });
+    return;
+  }
+  const parsed = sectionSchemas[type as SectionType].safeParse(body.content);
   if (!parsed.success) {
     res.status(400).json({ ok: false, error: formatZodError(parsed.error) });
     return;
   }
+  const enabled = body.enabled as boolean | undefined;
   const db = await getDb();
   await db
     .insert(schema.sectionContent)
-    .values({ type, content: parsed.data, updatedAt: new Date() })
+    .values({ type, content: parsed.data, enabled: enabled ?? true, updatedAt: new Date() })
     .onConflictDoUpdate({
       target: schema.sectionContent.type,
-      set: { content: parsed.data, updatedAt: new Date() },
+      set: {
+        content: parsed.data,
+        ...(enabled === undefined ? {} : { enabled }),
+        updatedAt: new Date(),
+      },
     });
   res.json({ ok: true });
 });
