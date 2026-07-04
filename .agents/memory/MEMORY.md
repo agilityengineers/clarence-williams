@@ -1,3 +1,1 @@
-- [Admin provisioning & session revocation](admin-provisioning-and-sessions.md) — cwsite admin comes from ADMIN_EMAIL/ADMIN_PASSWORD secrets synced on boot; password change + redeploy = reset; JWT `pv` fingerprint revokes old sessions.
-- [SendGrid notifications](sendgrid-notifications.md) — cwsite email transport quirks/config.
-- [Drizzle raw SQL inserts](drizzle-raw-sql-inserts.md) — notes on raw insert patterns.
+- [Hero halo flush-bottom](hero-halo-flush.md) — portrait cutout + circular halo need a shared overflow-hidden clip plane wider than the circle, with the circle's broad middle (not its tip) at the clip line.

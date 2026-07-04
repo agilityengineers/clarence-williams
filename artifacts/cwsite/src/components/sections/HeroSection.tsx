@@ -155,8 +155,8 @@ export default function HeroSection({ content }: { content: HeroContent }) {
         </div>
 
         {/* Portrait cutout */}
-        <div className="relative z-[2] mx-auto flex h-[420px] w-full max-w-[420px] items-end justify-center px-6 sm:h-[520px] sm:px-0 xl:absolute xl:bottom-0 xl:right-[120px] xl:mx-0 xl:h-[940px] xl:w-[720px] xl:max-w-none">
-          <div aria-hidden className="absolute bottom-0 left-1/2 h-[420px] w-[420px] -translate-x-1/2 translate-y-1/3 rounded-full xl:hidden" style={{ background: t.halo }} />
+        <div className="relative z-[2] mx-auto flex h-[420px] w-full max-w-[560px] items-end justify-center overflow-hidden px-6 sm:h-[520px] sm:px-0 xl:absolute xl:bottom-0 xl:right-[120px] xl:mx-0 xl:h-[940px] xl:w-[720px] xl:max-w-none xl:overflow-visible">
+          <div aria-hidden className="absolute bottom-0 left-1/2 h-[520px] w-[520px] -translate-x-1/2 translate-y-[140px] rounded-full xl:hidden" style={{ background: t.halo }} />
           <img
             src={portraitSrc}
             alt={`${content.firstName} ${content.lastName}`}
