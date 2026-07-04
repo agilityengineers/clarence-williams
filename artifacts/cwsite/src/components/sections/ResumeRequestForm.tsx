@@ -16,7 +16,14 @@ export default function ResumeRequestForm({
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [firstName, setFirstName] = useState<string | null>(null);
-  const [values, setValues] = useState({ name: "", email: "", company: "", roleDetails: "" });
+  // `website` is a honeypot: rendered off-screen, never filled by humans.
+  const [values, setValues] = useState({
+    name: "",
+    email: "",
+    company: "",
+    roleDetails: "",
+    website: "",
+  });
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -54,6 +61,19 @@ export default function ResumeRequestForm({
     <div className="flex flex-col border border-navy-rule bg-navy-panel p-8 md:p-14 md:pb-[52px]">
       <span className="font-display text-[36px] font-medium">{formTitle}</span>
       <form onSubmit={onSubmit} className="mt-10 flex flex-col gap-[26px]">
+        <div aria-hidden="true" className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden">
+          <label>
+            Website
+            <input
+              name="website"
+              type="text"
+              tabIndex={-1}
+              autoComplete="off"
+              value={values.website}
+              onChange={(e) => setValues({ ...values, website: e.target.value })}
+            />
+          </label>
+        </div>
         <Field label="FULL NAME *">
           <input
             name="name"
