@@ -17,7 +17,6 @@ export default function LoginPage() {
   useEffect(() => {
     if (!session.data) return;
     if (session.data.session) navigate("/");
-    else if (!session.data.hasAdmin) navigate("/setup");
   }, [session.data, navigate]);
 
   const onSubmit = async (formData: FormData): Promise<AuthFormState> => {

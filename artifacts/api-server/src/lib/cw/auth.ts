@@ -47,26 +47,6 @@ export async function hasAdminUser(): Promise<boolean> {
   return rows.length > 0;
 }
 
-/** First-run setup: creates the single admin account. Refuses if one exists. */
-export async function createAdminUser(email: string, password: string): Promise<void> {
-  if (await hasAdminUser()) {
-    throw new Error("Admin account already exists.");
-  }
-  const db = await getDb();
-  const normalizedEmail = email.trim().toLowerCase();
-  const passwordHash = await bcrypt.hash(password, 12);
-  // Atomic singleton guard: the INSERT only succeeds when the table is still
-  // empty, so two concurrent setup requests cannot both create an admin.
-  const result = await db.execute(sql`
-    INSERT INTO ${schema.adminUsers} (id, email, password_hash)
-    SELECT ${crypto.randomUUID()}::text, ${normalizedEmail}::text, ${passwordHash}::text
-    WHERE NOT EXISTS (SELECT 1 FROM ${schema.adminUsers})
-  `);
-  if (result.rowCount === 0) {
-    throw new Error("Admin account already exists.");
-  }
-}
-
 export async function verifyCredentials(email: string, password: string): Promise<boolean> {
   await ensureBootstrapped();
   const db = await getDb();

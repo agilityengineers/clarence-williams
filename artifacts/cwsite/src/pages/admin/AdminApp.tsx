@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { Switch, Route, useLocation } from "wouter";
 import { useSession } from "./session";
 import LoginPage from "./LoginPage";
-import SetupPage from "./SetupPage";
 import DashboardLayout from "./DashboardLayout";
 import OverviewPage from "./OverviewPage";
 import PagesListPage from "./pages/PagesListPage";
@@ -21,9 +20,9 @@ import ApiKeysPage from "./api-keys/ApiKeysPage";
 import NotFound from "@/pages/not-found";
 
 /**
- * Replaces the Next.js middleware: everything outside /login and /setup
- * requires an admin session. Redirects to /setup when no admin exists yet,
- * otherwise to /login.
+ * Replaces the Next.js middleware: everything outside /login requires an admin
+ * session. The admin account is provisioned from the ADMIN_EMAIL / ADMIN_PASSWORD
+ * secrets, so there is no in-app claim flow — unauthenticated users go to /login.
  */
 function Guarded({ children }: { children: React.ReactNode }) {
   const [, navigate] = useLocation();
@@ -32,7 +31,7 @@ function Guarded({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!session.data) return;
     if (session.data.session) return;
-    navigate(session.data.hasAdmin ? "/login" : "/setup", { replace: true });
+    navigate("/login", { replace: true });
   }, [session.data, navigate]);
 
   if (session.isLoading || !session.data?.session) {
@@ -52,7 +51,6 @@ export default function AdminApp() {
   return (
     <Switch>
       <Route path="/login" component={LoginPage} />
-      <Route path="/setup" component={SetupPage} />
       <Route path="/">
         <Guarded>
           <OverviewPage />

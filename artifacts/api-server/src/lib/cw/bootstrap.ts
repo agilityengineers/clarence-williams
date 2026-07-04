@@ -1,4 +1,5 @@
 import { eq } from "drizzle-orm";
+import bcrypt from "bcryptjs";
 import { getDb, schema } from "./db";
 import { defaultSectionContent } from "./sections/defaults";
 import { DEFAULT_SITE_SETTINGS } from "./settings";
@@ -26,6 +27,46 @@ async function bootstrap() {
   const db = await getDb();
   await seedIfEmpty(db);
   await seedLegalPagesIfMissing(db);
+  await seedAdminFromSecrets(db);
+}
+
+/**
+ * Ensures the single admin account matches the ADMIN_EMAIL / ADMIN_PASSWORD
+ * secrets. Runs every boot, so changing ADMIN_PASSWORD and redeploying resets
+ * the login password — this is the account-recovery path. When the secrets are
+ * absent, any existing admin row is left untouched (nothing is deleted).
+ * Any admin whose email does not match ADMIN_EMAIL is removed to preserve the
+ * single-admin model.
+ */
+async function seedAdminFromSecrets(db: Awaited<ReturnType<typeof getDb>>) {
+  const email = process.env.ADMIN_EMAIL?.trim().toLowerCase();
+  const password = process.env.ADMIN_PASSWORD;
+  if (!email || !password) return;
+
+  const rows = await db.select().from(schema.adminUsers);
+  for (const row of rows) {
+    if (row.email !== email) {
+      await db.delete(schema.adminUsers).where(eq(schema.adminUsers.id, row.id));
+    }
+  }
+
+  const existing = rows.find((r) => r.email === email);
+  if (existing) {
+    // Only re-hash when the password actually changed, so existing sessions
+    // (and the stored hash) stay stable across restarts.
+    if (await bcrypt.compare(password, existing.passwordHash)) return;
+    const passwordHash = await bcrypt.hash(password, 12);
+    await db
+      .update(schema.adminUsers)
+      .set({ passwordHash })
+      .where(eq(schema.adminUsers.id, existing.id));
+    logger.info("Admin password synced from ADMIN_PASSWORD secret");
+    return;
+  }
+
+  const passwordHash = await bcrypt.hash(password, 12);
+  await db.insert(schema.adminUsers).values({ email, passwordHash });
+  logger.info({ email }, "Admin account created from ADMIN_EMAIL / ADMIN_PASSWORD secrets");
 }
 
 async function seedIfEmpty(db: Awaited<ReturnType<typeof getDb>>) {
