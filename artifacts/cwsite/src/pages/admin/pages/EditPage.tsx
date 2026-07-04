@@ -12,6 +12,7 @@ type PageData = {
     title: string;
     metaTitle: string;
     metaDescription: string;
+    ogImageId: string | null;
     status: "draft" | "published";
     showInNav: boolean;
     navLabel: string | null;
@@ -80,6 +81,7 @@ export default function EditPage({ id }: { id: string }) {
             title: page.title,
             metaTitle: page.metaTitle,
             metaDescription: page.metaDescription,
+            ogImageId: page.ogImageId,
             status: page.status,
             showInNav: page.showInNav,
             navLabel: page.navLabel ?? "",

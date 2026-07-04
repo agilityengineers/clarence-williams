@@ -30,11 +30,15 @@ export function applyPageMeta({
   upsertMeta("property", "og:title", title);
   upsertMeta("name", "twitter:title", title);
   upsertMeta("property", "og:url", window.location.href);
-  if (description) {
-    upsertMeta("name", "description", description);
-    upsertMeta("property", "og:description", description);
-    upsertMeta("name", "twitter:description", description);
-  }
+  // Always overwrite the description tags — even legacy rows with a blank
+  // metaDescription get a page-specific fallback here, so client-side
+  // navigation never leaves a previous page's (or the home page's) stale
+  // description in place. Mirrors the server-side fallback in
+  // api-server/src/lib/cw/head-meta.ts.
+  const resolvedDescription = description || `${title} — Clarence Williams`;
+  upsertMeta("name", "description", resolvedDescription);
+  upsertMeta("property", "og:description", resolvedDescription);
+  upsertMeta("name", "twitter:description", resolvedDescription);
   if (ogImage) {
     upsertMeta("property", "og:image", ogImage);
     upsertMeta("name", "twitter:image", ogImage);

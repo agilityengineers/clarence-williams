@@ -232,22 +232,33 @@ router.delete("/admin/media/:id", async (req, res): Promise<void> => {
 
 /* -------------------------------- pages -------------------------------- */
 
-const pageMetaSchema = z.object({
-  slug: z
-    .string()
-    .min(1)
-    .max(120)
-    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug must be lowercase letters, numbers, and dashes."),
-  title: z.string().min(1).max(200),
-  metaTitle: z.string().max(300),
-  metaDescription: z.string().max(500),
-  status: z.enum(["draft", "published"]),
-  showInNav: z.boolean(),
-  navLabel: z.string().max(60),
-  navOrder: z.number().int(),
-  includeInSitemap: z.boolean(),
-  footerStyle: z.enum(["full", "slim"]),
-});
+const pageMetaSchema = z
+  .object({
+    slug: z
+      .string()
+      .min(1)
+      .max(120)
+      .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug must be lowercase letters, numbers, and dashes."),
+    title: z.string().min(1).max(200),
+    metaTitle: z.string().max(300),
+    metaDescription: z.string().max(500),
+    ogImageId: z.string().nullable(),
+    status: z.enum(["draft", "published"]),
+    showInNav: z.boolean(),
+    navLabel: z.string().max(60),
+    navOrder: z.number().int(),
+    includeInSitemap: z.boolean(),
+    footerStyle: z.enum(["full", "slim"]),
+  })
+  .superRefine((data, ctx) => {
+    if (data.status === "published" && data.metaDescription.trim().length === 0) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["metaDescription"],
+        message: "A meta description is required before a page can be published.",
+      });
+    }
+  });
 
 const pageSectionsInputSchema = z.array(
   z.object({

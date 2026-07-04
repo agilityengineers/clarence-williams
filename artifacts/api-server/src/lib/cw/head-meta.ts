@@ -22,7 +22,12 @@ import { renderAssessmentBodyHtml, renderPageBodyHtml } from "./render-body";
 
 export type HeadMeta = {
   title: string;
-  description?: string;
+  /**
+   * Always populated with a page-specific fallback when the DB value is
+   * blank — never left `undefined`, so `injectHeadMeta` always overwrites
+   * the description tags instead of leaving the home page's copy in place.
+   */
+  description: string;
   ogImage?: string;
   ogUrl: string;
   /** Server-rendered body markup for the route, for non-JS crawlers. */
@@ -68,9 +73,14 @@ export async function resolveHeadMeta(pathname: string): Promise<HeadMeta | null
 async function pageMeta(slug: string, base: string, path: string): Promise<HeadMeta | null> {
   const [page, layout] = await Promise.all([getPublishedPage(slug), getPublicLayout()]);
   if (!page) return null;
+  const title = page.metaTitle || page.title;
   return {
-    title: page.metaTitle || page.title,
-    description: page.metaDescription || undefined,
+    title,
+    // Legacy rows created before descriptions were required for publishing may
+    // still have a blank metaDescription. Fall back to a page-specific string
+    // (never the shared default already baked into index.html) so a page can
+    // never silently inherit the home page's description.
+    description: page.metaDescription || `${title} — Clarence Williams`,
     ogImage: page.ogImageId ? `${base}/api/media/${page.ogImageId}` : undefined,
     ogUrl: `${base}${path === "/" ? "/" : path}`,
     bodyHtml: renderPageBodyHtml(page, layout),
@@ -83,9 +93,10 @@ async function assessmentMeta(slug: string, base: string, path: string): Promise
   // Mirror the public route, which 404s inactive assessments.
   if (!assessment || !assessment.active) return null;
   const otherSlug = ASSESSMENT_CROSS_LINK[slug];
+  const title = `${assessment.title} — Clarence Williams`;
   return {
-    title: `${assessment.title} — Clarence Williams`,
-    description: assessment.intro.description || undefined,
+    title,
+    description: assessment.intro.description || title,
     ogUrl: `${base}${path}`,
     bodyHtml: renderAssessmentBodyHtml(
       assessment,
@@ -143,11 +154,9 @@ export function injectHeadMeta(html: string, meta: HeadMeta): string {
   out = setMeta(out, "name", "twitter:title", meta.title);
   out = setMeta(out, "property", "og:url", meta.ogUrl);
   out = setCanonical(out, meta.ogUrl);
-  if (meta.description) {
-    out = setMeta(out, "name", "description", meta.description);
-    out = setMeta(out, "property", "og:description", meta.description);
-    out = setMeta(out, "name", "twitter:description", meta.description);
-  }
+  out = setMeta(out, "name", "description", meta.description);
+  out = setMeta(out, "property", "og:description", meta.description);
+  out = setMeta(out, "name", "twitter:description", meta.description);
   if (meta.ogImage) {
     out = setMeta(out, "property", "og:image", meta.ogImage);
     out = setMeta(out, "name", "twitter:image", meta.ogImage);

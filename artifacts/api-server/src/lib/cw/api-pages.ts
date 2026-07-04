@@ -25,6 +25,7 @@ export const apiPageInputSchema = z.object({
   title: z.string().min(1).max(200),
   metaTitle: z.string().max(300).default(""),
   metaDescription: z.string().max(500).default(""),
+  ogImageId: z.string().nullable().default(null),
   status: z.enum(["draft", "published"]).default("published"),
   /** AI pages are unlinked by default per requirements. */
   showInNav: z.boolean().default(false),
@@ -53,6 +54,12 @@ export function validateApiPage(input: unknown):
   const issues: ApiValidationIssue[] = [];
   if (RESERVED_SLUGS.has(parsed.data.slug)) {
     issues.push({ path: "slug", message: `"${parsed.data.slug}" is reserved.` });
+  }
+  if (parsed.data.status === "published" && parsed.data.metaDescription.trim().length === 0) {
+    issues.push({
+      path: "metaDescription",
+      message: "A non-empty metaDescription is required to publish a page.",
+    });
   }
   parsed.data.sections.forEach((s, i) => {
     if (!(stackableSectionTypes as string[]).includes(s.type)) {
@@ -88,6 +95,7 @@ export async function upsertApiPage(
     title: input.title,
     metaTitle: input.metaTitle || input.title,
     metaDescription: input.metaDescription,
+    ogImageId: input.ogImageId,
     status: input.status,
     showInNav: input.showInNav,
     includeInSitemap: input.includeInSitemap,
@@ -136,6 +144,7 @@ export async function serializePage(pageId: string) {
     title: page.title,
     metaTitle: page.metaTitle,
     metaDescription: page.metaDescription,
+    ogImageId: page.ogImageId,
     status: page.status,
     showInNav: page.showInNav,
     includeInSitemap: page.includeInSitemap,

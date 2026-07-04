@@ -103,6 +103,7 @@ router.patch("/v1/pages/:slug", async (req, res): Promise<void> => {
     title: current?.title,
     metaTitle: current?.metaTitle,
     metaDescription: current?.metaDescription,
+    ogImageId: current?.ogImageId ?? null,
     status: current?.status,
     showInNav: current?.showInNav,
     includeInSitemap: current?.includeInSitemap,
@@ -162,8 +163,8 @@ router.get("/v1/section-schemas", async (req, res): Promise<void> => {
     usage: {
       createPage: "POST /api/v1/pages",
       pageShape:
-        "{ slug, title, metaTitle?, metaDescription?, status?, showInNav?=false, includeInSitemap?=true, jsonLd?, sections: [{ type, enabled?, content? }] }",
-      note: "Omit a section's content to render the site-wide shared content for that section type. Provide content matching the section's schema to override it for this page.",
+        "{ slug, title, metaTitle?, metaDescription?, ogImageId?, status?, showInNav?=false, includeInSitemap?=true, jsonLd?, sections: [{ type, enabled?, content? }] }",
+      note: "metaDescription is required (non-empty) for status=\"published\" pages — it's the copy search engines and social previews show for this page; leaving it blank surfaces a generic fallback instead of page-specific copy. ogImageId (from POST /api/admin/media, or GET /api/admin/media to list existing uploads) sets this page's own Open Graph / Twitter card image; omit to use the sitewide default. Omit a section's content to render the site-wide shared content for that section type. Provide content matching the section's schema to override it for this page.",
     },
   });
 });

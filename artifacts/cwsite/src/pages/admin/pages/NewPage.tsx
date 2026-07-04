@@ -23,6 +23,7 @@ export default function NewPage() {
             title: "",
             metaTitle: "",
             metaDescription: "",
+            ogImageId: null,
             status: "draft",
             showInNav: false,
             navLabel: "",

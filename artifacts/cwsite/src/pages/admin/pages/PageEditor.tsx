@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { useQueryClient } from "@tanstack/react-query";
-import { ApiError, apiDelete, apiPost } from "@/lib/api";
+import { ApiError, apiDelete, apiGet, apiPost, apiUrl } from "@/lib/api";
+import { useAdminQuery } from "../session";
 import SaveBar from "../ui/SaveBar";
 
 export type PageMeta = {
@@ -9,6 +10,7 @@ export type PageMeta = {
   title: string;
   metaTitle: string;
   metaDescription: string;
+  ogImageId: string | null;
   status: "draft" | "published";
   showInNav: boolean;
   navLabel: string;
@@ -16,6 +18,8 @@ export type PageMeta = {
   includeInSitemap: boolean;
   footerStyle: "full" | "slim";
 };
+
+type MediaItem = { id: string; filename: string; alt: string };
 
 export type SectionRow = {
   sectionType: string;
@@ -47,8 +51,15 @@ export default function PageEditor({
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const { data: mediaData } = useAdminQuery<{ items: MediaItem[] }>(["admin", "media"], () =>
+    apiGet<{ items: MediaItem[] }>("/admin/media"),
+  );
+  const media = mediaData?.items ?? [];
+
   const set = <K extends keyof PageMeta>(key: K, v: PageMeta[K]) =>
     setMeta((m) => ({ ...m, [key]: v }));
+
+  const descriptionMissing = meta.status === "published" && meta.metaDescription.trim().length === 0;
 
   const move = (i: number, delta: number) => {
     const j = i + delta;
@@ -71,9 +82,13 @@ export default function PageEditor({
   };
 
   const save = async () => {
-    setSaving(true);
     setMessage(null);
     setError(null);
+    if (descriptionMissing) {
+      setError("Add a meta description before publishing this page.");
+      return;
+    }
+    setSaving(true);
     try {
       const result = await apiPost<{ ok: boolean; id?: string }>("/admin/pages", {
         pageId,
@@ -125,17 +140,47 @@ export default function PageEditor({
         </Field>
         <Field label="Meta description (SEO)">
           <textarea
-            className={`${inputCls} resize-y`}
+            className={`${inputCls} resize-y ${descriptionMissing ? "border-red-500" : ""}`}
             rows={2}
             value={meta.metaDescription}
             onChange={(e) => set("metaDescription", e.target.value)}
           />
+          {descriptionMissing ? (
+            <span className="font-sans text-[12px] text-red-700">
+              Required to publish — search engines and social previews will otherwise show the home
+              page's description on this URL.
+            </span>
+          ) : null}
         </Field>
         <Field label="Status">
           <select className={inputCls} value={meta.status} onChange={(e) => set("status", e.target.value as "draft" | "published")}>
             <option value="published">Published</option>
             <option value="draft">Draft (hidden)</option>
           </select>
+        </Field>
+        <Field label="Social preview image (Open Graph)">
+          <div className="flex items-center gap-4">
+            <select
+              className={inputCls}
+              value={meta.ogImageId ?? ""}
+              onChange={(e) => set("ogImageId", e.target.value === "" ? null : e.target.value)}
+            >
+              <option value="">— Default / sitewide image —</option>
+              {media.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.filename}
+                  {m.alt ? ` (${m.alt})` : ""}
+                </option>
+              ))}
+            </select>
+            {meta.ogImageId ? (
+              <img
+                src={apiUrl(`/media/${meta.ogImageId}`)}
+                alt=""
+                className="h-14 w-14 border border-rule-light object-cover"
+              />
+            ) : null}
+          </div>
         </Field>
         <Field label="Footer style">
           <select className={inputCls} value={meta.footerStyle} onChange={(e) => set("footerStyle", e.target.value as "full" | "slim")}>
