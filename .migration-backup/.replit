@@ -1,0 +1,16 @@
+modules = ["nodejs-20", "web"]
+run = "npm run dev"
+entrypoint = "src/app/(site)/page.tsx"
+hidden = [".config", ".next", ".data", "node_modules"]
+
+[nix]
+channel = "stable-25_05"
+
+[deployment]
+deploymentTarget = "autoscale"
+build = ["npm", "run", "build"]
+run = ["npm", "run", "start"]
+
+[[ports]]
+localPort = 3000
+externalPort = 80
