@@ -13,6 +13,7 @@
     "@electric-sql/pglite": "^0.5.4",
     "bcryptjs": "^3.0.3",
     "drizzle-orm": "^0.45.2",
+    "fast-xml-parser": "^5.9.3",
     "jose": "^6.2.3",
     "next": "16.2.10",
     "pg": "^8.22.0",
@@ -33,6 +34,7 @@
     "playwright-core": "^1.61.1",
     "tailwindcss": "^4",
     "tsx": "^4.23.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "undici": "^8.6.0"
   }
 }

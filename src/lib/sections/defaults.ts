@@ -142,7 +142,7 @@ export const defaultSectionContent: SectionContentMap = {
 
   insights: {
     eyebrow: "EXECUTIVE INSIGHTS",
-    headline: "Perspective for the corner office.",
+    headline: "From the newsletter.",
     feedUrl: "https://ceo-advisory-group.com/newsletter/feed/rss",
     articleCount: 3,
     layout: "Editorial List",
@@ -173,31 +173,34 @@ export const defaultSectionContent: SectionContentMap = {
   },
 
   authorFeatured: {
-    eyebrow: "THE LATEST BOOK",
+    eyebrow: "THE AUTHOR",
     intro: "",
   },
 
   authorArchive: {
     eyebrow: "FROM THE ARCHIVE",
-    headline: "Earlier titles.",
+    headline: "Two decades of writing it down.",
     blurb:
-      "A collection of earlier works on marketing, reputation, and building businesses that customers trust.",
+      "Before Marketing Mayhem came a shelf of earlier works — including Local Marketing for Small Business: Building a 5 Star Reputation — each written from the front lines of running and advising real companies.",
     groupPhotoMediaId: null,
-    amazonUrl: "",
+    amazonUrl: "https://www.amazon.com/",
   },
 
   resumeRequest: {
     eyebrow: "CURRICULUM VITAE",
     headline: "Request my current resume.",
+    intro:
+      "I keep my resume current — and where a role calls for it, tailored. Tell me a little about the opportunity, and I will send the right version directly to your inbox.",
     credentialLines: [
-      "MBA, Technology Management — Georgia Institute of Technology",
-      "PMP® · RTE® · SPC® — PMI & Scaled Agile",
-      "Vistage Chair · CEO Advisory Group",
+      "MBA, Technology Management · PMP® · RTE® · SPC®",
+      "Senior technology leadership — enterprise agile transformations",
+      "Vistage Chair · CEO Advisory Group facilitator · author",
     ],
-    formTitle: "TELL ME ABOUT THE OPPORTUNITY",
+    confidentialNote: "Requests are delivered to Clarence directly. Strictly confidential.",
+    formTitle: "Resume request",
     confirmationTitle: "Request received.",
     confirmationBody:
-      "Thank you — your request has been delivered. Clarence will reply with a resume tailored to the role you described.",
+      "Clarence will review the opportunity and send the appropriate resume to your inbox shortly.",
   },
 
   prose: {

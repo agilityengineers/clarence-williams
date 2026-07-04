@@ -1,0 +1,1 @@
+ALTER TABLE "pages" ADD COLUMN "footer_style" text DEFAULT 'full' NOT NULL;

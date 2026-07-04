@@ -87,6 +87,7 @@ export const pages = pgTable(
     navLabel: text("nav_label"),
     navOrder: integer("nav_order").notNull().default(0),
     includeInSitemap: boolean("include_in_sitemap").notNull().default(true),
+    footerStyle: text("footer_style", { enum: ["full", "slim"] }).notNull().default("full"),
     createdBy: text("created_by", { enum: ["admin", "api"] }).notNull().default("admin"),
     jsonLd: jsonb("json_ld"),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),

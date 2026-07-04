@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import SiteFooter from "@/components/SiteFooter";
 import SiteNav from "@/components/SiteNav";
 import SectionRenderer from "@/components/sections/SectionRenderer";
 import { getPublishedPage } from "@/lib/pages";
@@ -16,9 +17,10 @@ export default async function HomePage() {
   return (
     <>
       <SiteNav activeSlug="home" />
-      <main>
+      <main className="flex flex-1 flex-col">
         <SectionRenderer sections={page.sections} />
       </main>
+      <SiteFooter variant={page.footerStyle} />
     </>
   );
 }

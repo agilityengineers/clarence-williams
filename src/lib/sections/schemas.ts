@@ -121,7 +121,9 @@ export const authorArchiveSchema = z.object({
 export const resumeRequestSchema = z.object({
   eyebrow: z.string(),
   headline: z.string(),
+  intro: z.string(),
   credentialLines: z.array(z.string()).max(5),
+  confidentialNote: z.string(),
   formTitle: z.string(),
   confirmationTitle: z.string(),
   confirmationBody: z.string(),

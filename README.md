@@ -27,6 +27,8 @@ Optional environment variables:
 | `DATABASE_URL` | Postgres connection string | falls back to embedded PGlite in `./.data` (dev only) |
 | `SITE_URL` | Canonical URL for sitemap/SEO | Replit domain, else `http://localhost:3000` |
 | `AUTH_SECRET` | Session signing secret | auto-generated and stored in the database |
+| `RESEND_API_KEY` | Enables email notifications for resume requests and assessment leads (via resend.com) | unset — leads are still stored in Admin → Leads |
+| `NOTIFY_TO` / `NOTIFY_FROM` | Notification recipient / sender override | contact email from settings / Resend onboarding sender |
 
 > **Note:** without `DATABASE_URL` the app uses a local file database that is
 > lost on redeploy in hosted environments. Always attach Postgres on Replit.
@@ -57,11 +59,34 @@ No database setup needed — an embedded Postgres (PGlite) is created in
   at server boot (`src/instrumentation.ts`). Generate new ones with
   `npm run db:generate` after editing `src/db/schema.ts`.
 
-## Build stages
+## What's included (all stages complete)
 
 1. ✅ Scaffold — stack, schema, auth, tokens, nav/footer, Replit config
-2. Public site — pixel-faithful sections and pages (1920px design, responsive)
-3. Admin dashboard — content editors, page builder, media, settings
-4. Assessments — two scored instruments + editor + leads
-5. RSS Insights — server-side fetch/cache, three layouts
-6. AI page API — authenticated endpoints for programmatic page creation
+2. ✅ Public site — pixel-faithful sections and pages (1920px design, responsive),
+   unlinked Author + Resume pages, resume-request lead capture
+3. ✅ Admin dashboard — section content editors (schema-driven), hero theme +
+   imagery, media library (DB-stored), page builder, books, settings, leads
+   inbox with CSV export
+4. ✅ Assessments — Agility + Business Health flows with required name/email/phone
+   capture, server-side scoring, full admin editor (questions, weights, tiers)
+5. ✅ RSS Insights — server-side fetch with hourly DB cache, three display
+   formats, per-placement overrides in the page builder
+6. ✅ AI page API — Bearer-authenticated endpoints (`docs/AI-PAGE-API.md`),
+   API-key management in the dashboard
+
+## First-run checklist (production)
+
+1. Visit `/admin/setup` → create the admin account.
+2. Admin → Media: upload the hero cutout, studio portrait, and book cover;
+   assign them in Sections → Hero / About and in Books.
+3. Settings: confirm the Calendly URL and contact details.
+4. Optionally set `RESEND_API_KEY` for email notifications of new leads.
+
+## Notes
+
+- The RSS feed is fetched server-side and cached for an hour; if the feed is
+  unreachable the section shows the last cached articles (or baked samples on
+  a fresh install), never an empty band.
+- This development sandbox blocks the feed host, so live-feed fetching should
+  be re-verified once on Replit — the code path is exercised and falls back
+  gracefully.

@@ -19,6 +19,7 @@ export type ResolvedPage = {
   metaDescription: string;
   status: "draft" | "published";
   includeInSitemap: boolean;
+  footerStyle: "full" | "slim";
   jsonLd: unknown;
   sections: ResolvedSection[];
 };
@@ -77,6 +78,7 @@ export async function getPublishedPage(slug: string): Promise<ResolvedPage | nul
     metaDescription: page.metaDescription,
     status: page.status,
     includeInSitemap: page.includeInSitemap,
+    footerStyle: page.footerStyle,
     jsonLd: page.jsonLd,
     sections,
   };

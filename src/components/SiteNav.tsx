@@ -14,7 +14,7 @@ export default async function SiteNav({ activeSlug }: { activeSlug?: string }) {
   return (
     <header className="sticky top-0 z-50 bg-navy border-b border-navy-rule">
       <div className="mx-auto flex max-w-[1920px] items-center justify-between px-6 py-[18px] lg:px-[100px]">
-        <Link href="/" className="flex items-center gap-4">
+        <Link href="/" className="flex items-center gap-5">
           <Image
             src="/assets/logo-gold.png"
             alt="CW monogram"
@@ -24,6 +24,9 @@ export default async function SiteNav({ activeSlug }: { activeSlug?: string }) {
           />
           <span className="font-sans text-[14px] font-semibold uppercase tracking-[0.24em] text-dark-ivory">
             Clarence Williams
+          </span>
+          <span className="font-sans text-[12px] tracking-[0.22em] text-dark-faint max-xl:hidden">
+            BUSINESS STRATEGY &amp; AGILE TRANSFORMATIONS
           </span>
         </Link>
 
@@ -54,7 +57,7 @@ export default async function SiteNav({ activeSlug }: { activeSlug?: string }) {
             rel="noopener noreferrer"
             className="bg-gold px-6 py-3 font-sans text-[13px] font-semibold uppercase tracking-[0.16em] text-on-gold transition-opacity hover:opacity-90"
           >
-            Book a Call
+            BOOK A CALL
           </a>
         </nav>
       </div>
